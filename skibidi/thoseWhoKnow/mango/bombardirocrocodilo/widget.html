@@ -175,13 +175,13 @@
 
         const prev = document.createElement('a');
         prev.className = 'nav-button';
-        prev.href = `widget.php?day=${prevDay}`;
+        prev.href = `widget.html?day=${prevDay}`;
         prev.textContent = 'Prev';
 
 
         const reset = document.createElement('a');
         reset.className = 'reset-button';
-        reset.href = 'widget.php';
+        reset.href = 'widget.html';
         reset.innerHTML = `
       <svg viewBox="0 0 24 24">
         <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6a6 6 0 01-6 6 6 6 0 01-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
@@ -189,7 +189,7 @@
 
         const next = document.createElement('a');
         next.className = 'nav-button';
-        next.href = `widget.php?day=${nextDay}`;
+        next.href = `widget.html?day=${nextDay}`;
         next.textContent = 'Next';
 
         buttons.appendChild(prev);
