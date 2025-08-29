@@ -2,200 +2,268 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <title>Anime Widget</title>
-    <style>
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background: #1c1c1e;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            color: white;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Anime Widget</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #1c1c1e;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      color: white;
+    }
 
-        .card {
-            max-width: 95vw;
-            aspect-ratio: 360 / 169;
-            margin: 2vh auto;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-            padding: 5%;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-        }
+    .card {
+      max-width: 95vw;
+      aspect-ratio: 360 / 169;
+      margin: 2vh auto;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      padding: 5%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
 
-        .title {
-            font-size: 1.4em;
-            font-weight: 600;
-            color: #ffcc00;
-            margin-bottom: 0.8em;
-        }
+    .title {
+      font-size: 1.4em;
+      font-weight: 600;
+      color: #ffcc00;
+      margin-bottom: 0.8em;
+    }
 
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+    .subtitle {
+      font-size: 1.2em;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 0.4em;
+    }
 
-        li {
-            font-size: 1.1em;
-            display: flex;
-            align-items: center;
-            gap: 0.5em;
-            margin-bottom: 0.4em;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
 
-        .dot {
-            width: 0.6em;
-            height: 0.6em;
-            background-color: #ffcc00;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
+    li {
+      font-size: 1.1em;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      margin-bottom: 0.4em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-        .placeholder {
-            font-style: italic;
-            opacity: 0.6;
-        }
+    .dot {
+      width: 0.6em;
+      height: 0.6em;
+      background-color: #ffcc00;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
 
-        .button-container {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            display: flex;
-            gap: 8px;
-            /* spacing between buttons */
-        }
+    .placeholder {
+      font-style: italic;
+      opacity: 0.6;
+    }
 
-        .nav-button {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid #444;
-            color: #ffcc00;
-            padding: 0.4em 0.8em;
-            font-size: 0.9em;
-            border-radius: 12px;
-            text-decoration: none;
-            display: flex;
-            /* changed from inline-block */
-            align-items: center;
-            /* vertical center */
-            justify-content: center;
-            /* horizontal center */
-            height: 2em;
-            /* optional: match height to .reset-button */
-        }
+    .button-container {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      display: flex;
+      gap: 8px;
+      /* spacing between buttons */
+    }
 
-        .reset-button svg {
-            width: 1.2em;
-            height: 1.2em;
-            fill: #ffcc00;
-        }
+    .nav-button {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid #444;
+      color: #ffcc00;
+      padding: 0.4em 0.8em;
+      font-size: 0.9em;
+      border-radius: 12px;
+      text-decoration: none;
+      display: flex;
+      /* changed from inline-block */
+      align-items: center;
+      /* vertical center */
+      justify-content: center;
+      /* horizontal center */
+      height: 2em;
+      /* optional: match height to .reset-button */
+    }
 
-        .reset-button {
-            width: 2em;
-            height: 2em;
-            padding: 0.3em;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.08);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
+    .reset-button svg {
+      width: 1.2em;
+      height: 1.2em;
+      fill: #ffcc00;
+    }
+
+    .reset-button {
+      width: 2em;
+      height: 2em;
+      padding: 0.3em;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
 </head>
 
 <body>
-    <div class="card">
-        <div class="title" id="dayLabel">Anime for ...</div>
-        <ul id="animeList"></ul>
-        <div class="button-container" id="buttons">
-            <!-- Navigation buttons will be injected here -->
-        </div>
+  <div class="card">
+    <div style="display: flex; gap: 0.5rem; align-items: center; font-family: 'Arial', sans-serif;">
+  <p class="subtitle" style="margin:0; font-weight: 500;">Shape Of Dreams Timer:</p>
+  <div id="timer" style="
+        background-color: #2c2c2c; 
+        color: #fff;
+        border-radius: 12px; 
+        padding: 0.5rem 1rem; 
+        display: flex; 
+        gap: 0.25rem; 
+        font-weight: 600;
+        font-size: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      ">
+    <span class="number" id="days" style="min-width:3ch; text-align:right;"></span> <span>D</span>
+    <span class="number" id="hours" style="min-width:2ch; text-align:right;"></span> <span>HR</span>
+    <span class="number" id="minutes" style="min-width:2ch; text-align:right;"></span> <span>Min</span>
+    <span class="number" id="seconds" style="min-width:2ch; text-align:right;"></span> <span>Sec</span>
+    <span class="number" id="milliseconds" style="min-width:3ch; text-align:right;"></span> <span>ms</span>
+  </div>
+</div>
+    <div class="title" id="dayLabel">Anime for ...</div>
+    <ul id="animeList"></ul>
+    <div class="button-container" id="buttons">
+      <!-- Navigation buttons will be injected here -->
     </div>
+  </div>
 
-    <script>
-        const animes = [
-            ['Intro to Mineralogy'],										/*Sunday*/
-            ['Sakamoto Days'],											/*Monday*/
-            ['None'],		 										/*Tuesday*/
-            ['Shield Hero S4', 'Vending Machine S2', '7th Prince', 'P&S Reboot'],				/*Wednesday*/
-            ['Dr. Stone', 'Dan Da Dan S2', 'Mikadono Sisters'], 						/*Thursday*/
-            ['None'], 												/*Friday*/
-            ['Dress-up Darling', 'Fragrant Flower'] 								/*Saturday*/
-        ];
+  <script>
+    const animes = [
+      ['Intro to Mineralogy'],										/*Sunday*/
+      ['Sakamoto Days'],											/*Monday*/
+      ['None'],		 										/*Tuesday*/
+      ['Shield Hero S4', 'Vending Machine S2', '7th Prince', 'P&S Reboot'],				/*Wednesday*/
+      ['Dr. Stone', 'Dan Da Dan S2', 'Mikadono Sisters'], 						/*Thursday*/
+      ['None'], 												/*Friday*/
+      ['Dress-up Darling', 'Fragrant Flower'] 								/*Saturday*/
+    ];
 
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-        const params = new URLSearchParams(location.search);
-        const todayIndex = new Date().getDay();
-        let dayIndex = parseInt(params.get('day'));
+    const params = new URLSearchParams(location.search);
+    const todayIndex = new Date().getDay();
+    let dayIndex = parseInt(params.get('day'));
 
-        if (isNaN(dayIndex) || dayIndex < 0 || dayIndex > 6) {
-            dayIndex = todayIndex;
-        }
+    if (isNaN(dayIndex) || dayIndex < 0 || dayIndex > 6) {
+      dayIndex = todayIndex;
+    }
 
-        const dayLabel = document.getElementById('dayLabel');
-        const animeList = document.getElementById('animeList');
+    const dayLabel = document.getElementById('dayLabel');
+    const animeList = document.getElementById('animeList');
 
-        dayLabel.textContent = `Anime for ${days[dayIndex]}`;
+    dayLabel.textContent = `Anime for ${days[dayIndex]}`;
 
-        const list = animes[dayIndex];
-        if (list.length === 1 && list[0] === 'None') {
-            const li = document.createElement('li');
-            li.textContent = 'No new episodes today.';
-            li.classList.add('placeholder');
-            animeList.appendChild(li);
-        } else {
-            list.forEach(title => {
-                const li = document.createElement('li');
-                const dot = document.createElement('div');
-                dot.classList.add('dot');
-                li.appendChild(dot);
-                li.appendChild(document.createTextNode(title));
-                animeList.appendChild(li);
-            });
-        }
+    const list = animes[dayIndex];
+    if (list.length === 1 && list[0] === 'None') {
+      const li = document.createElement('li');
+      li.textContent = 'No new episodes today.';
+      li.classList.add('placeholder');
+      animeList.appendChild(li);
+    } else {
+      list.forEach(title => {
+        const li = document.createElement('li');
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        li.appendChild(dot);
+        li.appendChild(document.createTextNode(title));
+        animeList.appendChild(li);
+      });
+    }
 
-        // Build button links
-        const prevDay = (dayIndex + 6) % 7;
-        const nextDay = (dayIndex + 1) % 7;
-        const buttons = document.getElementById('buttons');
+    // Build button links
+    const prevDay = (dayIndex + 6) % 7;
+    const nextDay = (dayIndex + 1) % 7;
+    const buttons = document.getElementById('buttons');
 
-        const prev = document.createElement('a');
-        prev.className = 'nav-button';
-        prev.href = `widget.html?day=${prevDay}`;
-        prev.textContent = 'Prev';
+    const prev = document.createElement('a');
+    prev.className = 'nav-button';
+    prev.href = `widget.html?day=${prevDay}`;
+    prev.textContent = 'Prev';
 
 
-        const reset = document.createElement('a');
-        reset.className = 'reset-button';
-        reset.href = 'widget.html';
-        reset.innerHTML = `
+    const reset = document.createElement('a');
+    reset.className = 'reset-button';
+    reset.href = 'widget.html';
+    reset.innerHTML = `
       <svg viewBox="0 0 24 24">
         <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6a6 6 0 01-6 6 6 6 0 01-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
       </svg>`;
 
-        const next = document.createElement('a');
-        next.className = 'nav-button';
-        next.href = `widget.html?day=${nextDay}`;
-        next.textContent = 'Next';
+    const next = document.createElement('a');
+    next.className = 'nav-button';
+    next.href = `widget.html?day=${nextDay}`;
+    next.textContent = 'Next';
 
-        buttons.appendChild(prev);
-        buttons.appendChild(reset);
-        buttons.appendChild(next);
-    </script>
+    buttons.appendChild(prev);
+    buttons.appendChild(reset);
+    buttons.appendChild(next);
+  </script>
+<script>
+function startCountdown() {
+  const daysEl = document.getElementById('days');
+  const hoursEl = document.getElementById('hours');
+  const minutesEl = document.getElementById('minutes');
+  const secondsEl = document.getElementById('seconds');
+  const msEl = document.getElementById('milliseconds');
+
+  const targetDate = new Date('September 10, 2025 23:59:00 GMT-0400');
+
+  function updateTimer() {
+    const now = new Date();
+    let diff = targetDate - now;
+
+    if (diff <= 0) {
+      daysEl.textContent = hoursEl.textContent = minutesEl.textContent =
+        secondsEl.textContent = msEl.textContent = '0';
+      return;
+    }
+
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff / (1000*60*60)) % 24);
+    const minutes = Math.floor((diff / (1000*60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+    const milliseconds = Math.floor(diff % 1000);
+
+    // Update elements with padding to keep width constant
+    daysEl.textContent = days.toString().padStart(3, '0');
+    hoursEl.textContent = hours.toString().padStart(2, '0');
+    minutesEl.textContent = minutes.toString().padStart(2, '0');
+    secondsEl.textContent = seconds.toString().padStart(2, '0');
+    msEl.textContent = milliseconds.toString().padStart(3, '0');
+
+    requestAnimationFrame(updateTimer);
+  }
+
+  updateTimer();
+}
+
+window.addEventListener('DOMContentLoaded', startCountdown);
+</script>
 </body>
 
 </html>
