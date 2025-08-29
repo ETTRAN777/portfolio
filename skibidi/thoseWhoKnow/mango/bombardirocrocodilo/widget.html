@@ -34,14 +34,14 @@
     }
 
     .title {
-      font-size: 1.4em;
+      font-size: clamp(1.1rem, 4vw, 1.5rem);
       font-weight: 600;
       color: #ffcc00;
       margin-bottom: 0.8em;
     }
 
     .subtitle {
-      font-size: 1.2em;
+      font-size: clamp(0.9rem, 3vw, 1.2rem);
       font-weight: 600;
       color: white;
       margin-bottom: 0.4em;
@@ -54,7 +54,7 @@
     }
 
     li {
-      font-size: 1.1em;
+      font-size: clamp(0.85rem, 2.5vw, 1.1rem);
       display: flex;
       align-items: center;
       gap: 0.5em;
@@ -83,7 +83,6 @@
       right: 10px;
       display: flex;
       gap: 8px;
-      /* spacing between buttons */
     }
 
     .nav-button {
@@ -91,17 +90,13 @@
       border: 1px solid #444;
       color: #ffcc00;
       padding: 0.4em 0.8em;
-      font-size: 0.9em;
+      font-size: clamp(0.75rem, 2vw, 0.95rem);
       border-radius: 12px;
       text-decoration: none;
       display: flex;
-      /* changed from inline-block */
       align-items: center;
-      /* vertical center */
       justify-content: center;
-      /* horizontal center */
       height: 2em;
-      /* optional: match height to .reset-button */
     }
 
     .reset-button svg {
@@ -120,47 +115,65 @@
       align-items: center;
       justify-content: center;
     }
+
+    /* Timer styles */
+    #timer {
+      background-color: #2c2c2c;
+      color: #fff;
+      border-radius: 12px;
+      padding: 0.4rem 0.8rem;
+      display: flex;
+      gap: 0.25rem;
+      font-weight: 600;
+      font-size: clamp(0.8rem, 3vw, 1.1rem);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .number {
+      min-width: 3ch;
+      text-align: right;
+    }
+
+    .timer-label {
+      min-width: 2ch;
+      text-align: left;
+    }
+
   </style>
 </head>
 
 <body>
   <div class="card">
-    <div style="display: flex; gap: 0.5rem; align-items: center; font-family: 'Arial', sans-serif;">
-  <p class="subtitle" style="margin:0; font-weight: 500;">Shape Of Dreams Timer:</p>
-  <div id="timer" style="
-        background-color: #2c2c2c; 
-        color: #fff;
-        border-radius: 12px; 
-        padding: 0.5rem 1rem; 
-        display: flex; 
-        gap: 0.25rem; 
-        font-weight: 600;
-        font-size: 1rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      ">
-    <span class="number" id="days" style="min-width:3ch; text-align:right;"></span> <span>D</span>
-    <span class="number" id="hours" style="min-width:2ch; text-align:right;"></span> <span>HR</span>
-    <span class="number" id="minutes" style="min-width:2ch; text-align:right;"></span> <span>Min</span>
-    <span class="number" id="seconds" style="min-width:2ch; text-align:right;"></span> <span>Sec</span>
-    <span class="number" id="milliseconds" style="min-width:3ch; text-align:right;"></span> <span>ms</span>
-  </div>
-</div>
+    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+      <p class="subtitle" style="margin:0; font-weight: 500;">Shape Of Dreams Timer:</p>
+      <div id="timer">
+        <span class="number" id="days"></span><span class="timer-label">D</span>
+        <span class="number" id="hours"></span><span class="timer-label">HR</span>
+        <span class="number" id="minutes"></span><span class="timer-label">Min</span>
+        <span class="number" id="seconds"></span><span class="timer-label">Sec</span>
+        <span class="number" id="milliseconds"></span><span class="timer-label">ms</span>
+      </div>
+    </div>
+
     <div class="title" id="dayLabel">Anime for ...</div>
     <ul id="animeList"></ul>
+
     <div class="button-container" id="buttons">
-      <!-- Navigation buttons will be injected here -->
+      <!-- Navigation buttons injected by JS -->
     </div>
   </div>
 
   <script>
     const animes = [
-      ['Intro to Mineralogy'],										/*Sunday*/
-      ['Sakamoto Days'],											/*Monday*/
-      ['None'],		 										/*Tuesday*/
-      ['Shield Hero S4', 'Vending Machine S2', '7th Prince', 'P&S Reboot'],				/*Wednesday*/
-      ['Dr. Stone', 'Dan Da Dan S2', 'Mikadono Sisters'], 						/*Thursday*/
-      ['None'], 												/*Friday*/
-      ['Dress-up Darling', 'Fragrant Flower'] 								/*Saturday*/
+      ['Intro to Mineralogy'],
+      ['Sakamoto Days'],
+      ['None'],
+      ['Shield Hero S4', 'Vending Machine S2', '7th Prince', 'P&S Reboot'],
+      ['Dr. Stone', 'Dan Da Dan S2', 'Mikadono Sisters'],
+      ['None'],
+      ['Dress-up Darling', 'Fragrant Flower']
     ];
 
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -168,10 +181,7 @@
     const params = new URLSearchParams(location.search);
     const todayIndex = new Date().getDay();
     let dayIndex = parseInt(params.get('day'));
-
-    if (isNaN(dayIndex) || dayIndex < 0 || dayIndex > 6) {
-      dayIndex = todayIndex;
-    }
+    if (isNaN(dayIndex) || dayIndex < 0 || dayIndex > 6) dayIndex = todayIndex;
 
     const dayLabel = document.getElementById('dayLabel');
     const animeList = document.getElementById('animeList');
@@ -195,7 +205,6 @@
       });
     }
 
-    // Build button links
     const prevDay = (dayIndex + 6) % 7;
     const nextDay = (dayIndex + 1) % 7;
     const buttons = document.getElementById('buttons');
@@ -204,7 +213,6 @@
     prev.className = 'nav-button';
     prev.href = `widget.html?day=${prevDay}`;
     prev.textContent = 'Prev';
-
 
     const reset = document.createElement('a');
     reset.className = 'reset-button';
@@ -222,48 +230,48 @@
     buttons.appendChild(prev);
     buttons.appendChild(reset);
     buttons.appendChild(next);
-  </script>
-<script>
-function startCountdown() {
-  const daysEl = document.getElementById('days');
-  const hoursEl = document.getElementById('hours');
-  const minutesEl = document.getElementById('minutes');
-  const secondsEl = document.getElementById('seconds');
-  const msEl = document.getElementById('milliseconds');
 
-  const targetDate = new Date('September 10, 2025 23:59:00 GMT-0400');
+    // Countdown
+    function startCountdown() {
+      const daysEl = document.getElementById('days');
+      const hoursEl = document.getElementById('hours');
+      const minutesEl = document.getElementById('minutes');
+      const secondsEl = document.getElementById('seconds');
+      const msEl = document.getElementById('milliseconds');
 
-  function updateTimer() {
-    const now = new Date();
-    let diff = targetDate - now;
+      const targetDate = new Date('September 10, 2025 23:59:00 GMT-0400');
 
-    if (diff <= 0) {
-      daysEl.textContent = hoursEl.textContent = minutesEl.textContent =
-        secondsEl.textContent = msEl.textContent = '0';
-      return;
+      function updateTimer() {
+        const now = new Date();
+        let diff = targetDate - now;
+
+        if (diff <= 0) {
+          daysEl.textContent = hoursEl.textContent = minutesEl.textContent =
+            secondsEl.textContent = msEl.textContent = '0';
+          return;
+        }
+
+        const daysNum = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hoursNum = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutesNum = Math.floor((diff / (1000 * 60)) % 60);
+        const secondsNum = Math.floor((diff / 1000) % 60);
+        const millisecondsNum = Math.floor(diff % 1000);
+
+        daysEl.textContent = daysNum.toString().padStart(3, '0');
+        hoursEl.textContent = hoursNum.toString().padStart(2, '0');
+        minutesEl.textContent = minutesNum.toString().padStart(2, '0');
+        secondsEl.textContent = secondsNum.toString().padStart(2, '0');
+        msEl.textContent = millisecondsNum.toString().padStart(3, '0');
+
+        requestAnimationFrame(updateTimer);
+      }
+
+      updateTimer();
     }
 
-    const days = Math.floor(diff / (1000*60*60*24));
-    const hours = Math.floor((diff / (1000*60*60)) % 24);
-    const minutes = Math.floor((diff / (1000*60)) % 60);
-    const seconds = Math.floor((diff / 1000) % 60);
-    const milliseconds = Math.floor(diff % 1000);
+    window.addEventListener('DOMContentLoaded', startCountdown);
 
-    // Update elements with padding to keep width constant
-    daysEl.textContent = days.toString().padStart(3, '0');
-    hoursEl.textContent = hours.toString().padStart(2, '0');
-    minutesEl.textContent = minutes.toString().padStart(2, '0');
-    secondsEl.textContent = seconds.toString().padStart(2, '0');
-    msEl.textContent = milliseconds.toString().padStart(3, '0');
-
-    requestAnimationFrame(updateTimer);
-  }
-
-  updateTimer();
-}
-
-window.addEventListener('DOMContentLoaded', startCountdown);
-</script>
+  </script>
 </body>
 
 </html>
