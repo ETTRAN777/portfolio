@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ethan Tran • Portfolio</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav id="navbar">
+        <ul>
+            <li><a onclick="scrollToSection('hero')">Home</a></li>
+            <li><a onclick="scrollToSection('skills')">Skills and Resume</a></li>
+            <li><a onclick="scrollToSection('projects')">Projects</a></li>
+            <li><a onclick="scrollToSection('contact')">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="hero">
+        <div class="hero-content">
+            <h1>Hey, I'm Ethan Tran</h1>
+            <p>Information and Computer Scientist • Game Developer • Full-Stack Developer • Database Practitioner</p>
+        </div>
+    </header>
+
+    <section id="skills">
+        <div class="sectionHeader">
+            <div class="sectionBegin"></div>
+            <h2>Skills</h2>
+            <div class="sectionEnd"></div>
+        </div>
+        <ul class="skills-list">
+            <li class="software-language">Java</li>
+            <li class="software-language">C#</li>
+            <li class="software-language">C</li>
+            <li class="software-language">Python</li>
+            <li class="database">R</li>
+            <li class="database">SQL</li>
+            <li class="web-language">HTML</li>
+            <li class="web-language">CSS</li>
+            <li class="web-language">JavaScript</li>
+            <li class="web-language">NodeJS</li>
+            <li class="web-language">RestAPI</li>
+        </ul>
+
+        <div class="description">
+            <br><br>
+            <p>I'm an information and computer scientist with a strong interest in game development, particularly using
+                C#. My academic
+                background includes solid foundations in Java, C, SQL, and the core front-end web technologies—HTML,
+                CSS, and JavaScript. I’m passionate about the structured, problem-solving nature of software development
+                and enjoy the
+                challenge of crafting efficient, elegant solutions to complex technical problems.</p>
+            <br>
+            <p>In my free time, I enjoy developing games as a creative outlet and also love playing video games to
+                unwind and draw inspiration from the industry's best practices. Web design is another area I’m
+                passionate
+                about, blending visual design with technical precision.</p>
+        </div>
+
+        <a href="ethanTranCurrentResume.pdf" target="_blank" class="resume-btn">Resume PDF</a>
+    </section>
+
+    <section id="projects">
+        <div class="sectionHeader">
+            <div class="sectionBegin"></div>
+            <h2>Projects</h2>
+            <div class="sectionEnd"></div>
+        </div>
+        <div class="project-card">
+            <h3>Volare - 2D Platformer Game</h3>
+            <p>Game development project: core mechanics, GUI, dialogue, cutscenes, and character movement and abilities.
+                <a href="/portfolio/gallery.html">
+                    <p class="resume-btn"><span style="color: white;">Go to Gallery →</span></p>
+                </a>
+            </p>
+        </div>
+        <div class="project-card">
+            <h3>Job Junction</h3>
+            <p>Polished job searching site utilizing various API and JS Libraries</p>
+            <a href="https://inst-377-final-project-alpha-amber.vercel.app/" target="_blank">
+                <p class="resume-btn" style="color: white;">Go to Project →</p>
+            </a>
+        </div>
+        <div class="project-card">
+            <h3>Debt and Taxes - 2D Clicker Game</h3>
+            <p>Core Game development: Gameplay mechanics, GUI, ingame time and threat system.</p>
+            <a href="/portfolio/gallery.html">
+                <p class="resume-btn"><span style="color: white;">Go to Gallery →</span></p>
+            </a>
+        </div>
+        <div class="project-card">
+            <h3>MD Club Gymnastics Website</h3>
+            <p>Responsive design, modern UI, single page application, and mobile-friendly</p>
+            <a href="https://mdclubgymnastics.github.io/mdclubgymnasticswebsite/" target="_blank">
+                <p class="resume-btn"><span style="color: white;">Go to Project →</span></p>
+            </a>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div style="align-content: center;" class="sectionHeader">
+            <div class="sectionEnd"></div>
+            <h2 style="color: white;">Contact</h2>
+            <div class="sectionEnd"></div>
+        </div>
+        <div class="contact-cards">
+            <div class="contact-card">
+                <span class="label personal">PERSONAL</span>
+                <p>etmbox@gmail.com</p>
+            </div>
+            <div class="contact-card">
+                <span class="label university">UNIVERSITY</span>
+                <p>etran124@terpmail.umd.edu</p>
+            </div>
+        </div>
+
+        <div class="social-icons">
+            <a href="https://github.com/ETTRAN777" target="_blank">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="mailto:etmbox@gmail.com">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>Copyright © 2025 | Built and designed by Ethan Tran | All Rights Reserved</p>
+    </footer>
+
+    <!-- Place this at the end of body for best performance -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
