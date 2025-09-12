@@ -146,17 +146,6 @@
 
 <body>
   <div class="card">
-    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
-      <p class="subtitle" style="margin:0; font-weight: 500;">Shape Of Dreams Timer:</p>
-      <div id="timer">
-        <span class="number" id="days"></span><span class="timer-label">D</span>
-        <span class="number" id="hours"></span><span class="timer-label">HR</span>
-        <span class="number" id="minutes"></span><span class="timer-label">Min</span>
-        <span class="number" id="seconds"></span><span class="timer-label">Sec</span>
-        <span class="number" id="milliseconds"></span><span class="timer-label">ms</span>
-      </div>
-    </div>
-
     <div class="title" id="dayLabel">Anime for ...</div>
     <ul id="animeList"></ul>
 
@@ -230,47 +219,6 @@
     buttons.appendChild(prev);
     buttons.appendChild(reset);
     buttons.appendChild(next);
-
-    // Countdown
-    function startCountdown() {
-      const daysEl = document.getElementById('days');
-      const hoursEl = document.getElementById('hours');
-      const minutesEl = document.getElementById('minutes');
-      const secondsEl = document.getElementById('seconds');
-      const msEl = document.getElementById('milliseconds');
-
-      const targetDate = new Date('September 10, 2025 22:00:00 GMT-0400');
-
-      function updateTimer() {
-        const now = new Date();
-        let diff = targetDate - now;
-
-        if (diff <= 0) {
-          daysEl.textContent = hoursEl.textContent = minutesEl.textContent =
-            secondsEl.textContent = msEl.textContent = '0';
-          return;
-        }
-
-        const daysNum = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hoursNum = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutesNum = Math.floor((diff / (1000 * 60)) % 60);
-        const secondsNum = Math.floor((diff / 1000) % 60);
-        const millisecondsNum = Math.floor(diff % 1000);
-
-        daysEl.textContent = daysNum.toString().padStart(3, '0');
-        hoursEl.textContent = hoursNum.toString().padStart(2, '0');
-        minutesEl.textContent = minutesNum.toString().padStart(2, '0');
-        secondsEl.textContent = secondsNum.toString().padStart(2, '0');
-        msEl.textContent = millisecondsNum.toString().padStart(3, '0');
-
-        requestAnimationFrame(updateTimer);
-      }
-
-      updateTimer();
-    }
-
-    window.addEventListener('DOMContentLoaded', startCountdown);
-
   </script>
 </body>
 
