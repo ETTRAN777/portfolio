@@ -161,6 +161,11 @@ section h2 {
   color: #166534;
 }
 
+.skills-list li.info-sci {
+  background: linear-gradient(90deg, #fed58a 0%, #f7e8bb 100%);
+  color: #88570e;
+}
+
 /* Project Cards */
 .project-card, .job {
   background-color: #ffffff;
