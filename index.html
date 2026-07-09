@@ -11,12 +11,31 @@
 
 <body>
 
+<div id="overlay" class="overlay"></div>
+
+    <button id="navToggle">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </button>
+
+    <nav id="mobileNavContainer">
+        <ul id="mobile-nav-list">
+            <li><a onclick="handleMobileClick('hero')">Home</a></li>
+            <li><a onclick="handleMobileClick('skills')">Skills and Resume</a></li>
+            <li><a onclick="handleMobileClick('projects')">Projects</a></li>
+            <li><a onclick="handleMobileClick('education')">Education</a></li>
+            <li><a onclick="handleMobileClick('contact')">Contact</a></li>
+        </ul>
+    </nav>
+
     <!-- Navbar -->
     <nav id="navbar">
         <ul>
             <li><a onclick="scrollToSection('hero')">Home</a></li>
             <li><a onclick="scrollToSection('skills')">Skills and Resume</a></li>
             <li><a onclick="scrollToSection('projects')">Projects</a></li>
+            <li><a onclick="scrollToSection('education')">Education</a></li>
             <li><a onclick="scrollToSection('contact')">Contact</a></li>
         </ul>
     </nav>
@@ -41,12 +60,18 @@
             <li class="software-language">Unity</li>
             <li class="software-language">C</li>
             <li class="software-language">Python</li>
+            <li class="software-language">x86 Assembly</li>
             <li class="database">R</li>
             <li class="database">SQL</li>
+            <li class="database">Cloudflare D1</li>
             <li class="web-language">HTML</li>
             <li class="web-language">CSS</li>
             <li class="web-language">JavaScript</li>
             <li class="web-language">NodeJS</li>
+            <li class="web-language">React</li>
+            <li class="web-language">Tailwind CSS</li>
+            <li class="web-language">TypeScript</li>
+            <li class="web-language">Cloudflare</li>
             <li class="web-language">RestAPI</li>
             <li class="info-sci">User Research</li>
             <li class="info-sci">User Testing</li>
@@ -77,11 +102,31 @@
             <h2>Projects</h2>
             <div class="sectionEnd"></div>
         </div>
+
+        <div class="project-card">
+            <h3>Alchemist's Pantry - Recipe by Pantry App</h3>
+            <ul class="skills-list">
+                <li class="web-language">React</li>
+                <li class="web-language">Tailwind CSS</li>
+                <li class="web-language">TypeScript</li>
+                <li class="web-language">Cloudflare</li>
+                <li class="web-language">RestAPI</li>
+                <li class="database">Cloudflare D1</li>
+            </ul>
+            <p>Full-stack web application that pulls recipes based on user-inputted ingredients, utilizing a
+                custom-built recipe generation algorithm and a user-friendly interface.
+                <a href="">
+                    <p class="resume-btn"><span style="color: white;">Coming Soon</span></p>
+                </a>
+            </p>
+        </div>
         <div class="project-card">
             <h3>Volare - 2D Platformer Game</h3>
             <ul class="skills-list">
                 <li class="software-language">C#</li>
                 <li class="software-language">Unity</li>
+                <li class="info-sci">User Research</li>
+                <li class="info-sci">User Testing</li>
             </ul>
             <p>Game development project: core mechanics, GUI, dialogue, cutscenes, and character movement and abilities.
                 <a href="/portfolio/gallery.html">
@@ -104,10 +149,12 @@
             </a>
         </div>
         <div class="project-card">
-            <h3>Debt and Taxes - 2D Clicker Game</h3>
+            <h3>Debt and Taxes - 2D Incremental Game</h3>
             <ul class="skills-list">
                 <li class="software-language">C#</li>
                 <li class="software-language">Unity</li>
+                <li class="info-sci">User Research</li>
+                <li class="info-sci">User Testing</li>
             </ul>
             <p>Core Game development: Gameplay mechanics, GUI, ingame time and threat system.</p>
             <a href="/portfolio/gallery.html">
@@ -123,8 +170,9 @@
                 <li class="web-language">JavaScript</li>
                 <li class="info-sci">User Research & Testing</li>
             </ul>
-            <p>Responsive design, modern UI, single page application, and mobile-friendly</p>
-            <a href="https://ettran777.github.io/UMDCampusPantry/" target="_blank">
+            <p>Responsive design, modern UI, single page application, and mobile-friendly, made in INST362 for clients
+            </p>
+            <a href="https://ettran777.github.io/UMDCampusPantry" target="_blank">
                 <p class="resume-btn"><span style="color: white;">Go to Project →</span></p>
             </a>
         </div>
@@ -136,13 +184,14 @@
                 <li class="web-language">CSS</li>
                 <li class="web-language">JavaScript</li>
             </ul>
-            <p>Responsive design, modern UI, single page application, and mobile-friendly</p>
+            <p>Responsive design, modern UI, single page application, and mobile-friendly, developed during a volunteer
+                role for UMD Club Gymnastics</p>
             <a href="https://mdclubgymnastics.github.io/mdclubgymnasticswebsite/" target="_blank">
                 <p class="resume-btn"><span style="color: white;">Go to Project →</span></p>
             </a>
         </div>
 
-          <div class="project-card">
+        <div class="project-card">
             <h3>INST414 Medium Posts</h3>
             <ul class="skills-list">
                 <li class="software-language">Python</li>
@@ -154,7 +203,146 @@
                 <p class="resume-btn"><span style="color: white;">Go to Medium →</span></p>
             </a>
         </div>
-        
+
+    </section>
+
+    <section id="education">
+        <div class="sectionHeader">
+            <div class="sectionBegin"></div>
+            <h2>Relevant Coursework</h2>
+            <div class="sectionEnd"></div>
+        </div>
+        <div class="side-scrolling-container">
+
+            <a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst414&sectionId=&termId=202408&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 414: Data Science Techniques</h3>
+                    <ul class="skills-list">
+                        <li class="software-language">Python</li>
+                        <li class="web-language">RestAPI</li>
+                        <li class="info-sci">Data Analysis Techniques</li>
+                    </ul>
+                    <p>Data analysis techniques, data visualization, and the ethical implications of data use.</p>
+                    <div class="course-footer">
+                        <h4>Taken: Fall 2025</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+            <a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst377&sectionId=&termId=202508&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 377: Dynamic Web Applications</h3>
+                    <ul class="skills-list">
+                        <li class="web-language">HTML CSS JavaScript</li>
+                        <li class="web-language">Node/ExpressJS</li>
+                        <li class="web-language">RestAPI</li>
+                    </ul>
+                    <p>Full-stack web development, including front-end frameworks, back-end development, and database
+                        integration.</p>
+                    <div class="course-footer">
+                        <h4>Taken: Spring 2025</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+            <a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst362&sectionId=&termId=202508&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 362: User Centered Design</h3>
+                    <ul class="skills-list">
+                        <li class="info-sci">User Research</li>
+                        <li class="info-sci">User Testing</li>
+                        <li class="web-language">HTML</li>
+                        <li class="web-language">CSS</li>
+                        <li class="web-language">JavaScript</li>
+                    </ul>
+                    <p>Designing and implementing user-centered web applications using research-driven design
+                        principles.
+                    </p>
+                    <div class="course-footer">
+                        <h4>Taken: Fall 2025</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+
+            <a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst327&sectionId=&termId=202508&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 327: Database Design and Modeling</h3>
+                    <ul class="skills-list">
+                        <li class="database">SQL</li>
+                    </ul>
+                    <p>Database design principles, normalization, and SQL query optimization.</p>
+                    <div class="course-footer">
+                        <h4>Taken: Fall 2024</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+
+                <a target="_blank"
+                    href="https://app.testudo.umd.edu/soc/search?courseId=cmsc132&sectionId=&termId=202408&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                    <div class="course-card">
+                        <h3>CMSC 216: Intro to Computer Systems</h3>
+                        <ul class="skills-list">
+                            <li class="software-language">C</li>
+                            <li class="software-language">x86 Assembly</li>
+                        </ul>
+                        <p>Computer architecture, operating systems, and low-level programming concepts.</p>
+                        <div class="course-footer">
+                            <h4>Taken: Spring 2024</h4>
+                            <img
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                        </div>
+                    </div>
+                </a>
+
+                <a target="_blank"
+                    href="https://app.testudo.umd.edu/soc/search?courseId=cmsc132&sectionId=&termId=202408&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                    <div class="course-card">
+                        <h3>CMSC 132: OOP II</h3>
+                        <ul class="skills-list">
+                            <li class="software-language">Java</li>
+                        </ul>
+                        <p>Algorithms, data structures, and time complexity optimization.</p>
+                        <div class="course-footer">
+                            <h4>Taken: Fall 2023</h4>
+                            <img
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                        </div>
+                    </div>
+                </a>
+
+                <div class="course-card" style="cursor: text;">
+                    <h3>Various INST Courses</h3>
+                    <ul class="skills-list">
+                        <li class="software-language">Python</li>
+                        <li class="database">R</li>
+                        <li class="info-sci">User Research</li>
+                        <li class="info-sci">User Testing</li>
+                        <li class="info-sci">Data Analysis Techniques</li>
+                    </ul>
+                    <p>Various courses covering user research and testing methodologies, as well as R programming for
+                        data
+                        analysis.</p>
+                    <div class="course-footer">
+                        <h4>Taken: 2022-2024</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+        </div>
+
+
     </section>
 
     <section id="contact" class="contact-section">
@@ -185,7 +373,7 @@
     </section>
 
     <footer class="site-footer">
-        <p>Copyright © 2025 | Built and designed by Ethan Tran | All Rights Reserved</p>
+        <p>Copyright © 2026 | Built and designed by Ethan Tran | All Rights Reserved</p>
     </footer>
 
     <!-- Place this at the end of body for best performance -->

@@ -115,6 +115,45 @@ function scrollToSection(element) {
   }
 }
 
+/* =========================================
+   MOBILE NAVIGATION LOGIC
+   ========================================= */
+const navToggle = document.getElementById('navToggle');
+const mobileNav = document.getElementById('mobileNavContainer');
+const overlay = document.getElementById('overlay');
+
+// Function to toggle menu
+function toggleMobileMenu() {
+    const isOpen = mobileNav.classList.contains('open');
+    
+    if (isOpen) {
+        // Close Menu
+        mobileNav.classList.remove('open');
+        overlay.classList.remove('show');
+        navToggle.classList.remove('animate-x'); // Rotate back
+        setTimeout(() => {
+            navToggle.classList.remove('open'); // Separate bars
+        }, 200);
+    } else {
+        // Open Menu
+        mobileNav.classList.add('open');
+        overlay.classList.add('show');
+        navToggle.classList.add('open'); // Bring bars together
+        setTimeout(() => {
+            navToggle.classList.add('animate-x'); // Rotate to X
+        }, 200);
+    }
+}
+
+// Function to handle link clicks (scroll + close menu)
+function handleMobileClick(sectionId) {
+    scrollToSection(sectionId); // Uses your existing scroll function
+    toggleMobileMenu(); // Close the menu
+}
+
+// Event Listeners
+navToggle.addEventListener('click', toggleMobileMenu);
+overlay.addEventListener('click', toggleMobileMenu);
 
 // Gallery popup modal for .galleryItem
 document.addEventListener("DOMContentLoaded", () => {
