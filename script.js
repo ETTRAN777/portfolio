@@ -152,8 +152,16 @@ function handleMobileClick(sectionId) {
 }
 
 // Event Listeners
-navToggle.addEventListener('click', toggleMobileMenu);
-overlay.addEventListener('click', toggleMobileMenu);
+// Guarded — #navToggle/#overlay only exist on index.html. Without this
+// check, getElementById returns null on every other page (gallery.html,
+// debtAndTaxes.html, volare.html), and calling .addEventListener on null
+// throws synchronously — which was halting the rest of this script,
+// including the gallery modal setup below, on every page that actually
+// has a gallery.
+if (navToggle && overlay) {
+  navToggle.addEventListener('click', toggleMobileMenu);
+  overlay.addEventListener('click', toggleMobileMenu);
+}
 
 // Gallery popup modal for .galleryItem
 document.addEventListener("DOMContentLoaded", () => {
@@ -163,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
   modal.innerHTML = `
     <div class="gallery-modal-content">
       <span class="gallery-modal-close">&times;</span>
-      <img src="" alt="Gallery Image" class="gallery-modal-img" />
+      <img alt="Gallery Image" class="gallery-modal-img" />
       <div class="gallery-modal-caption"></div>
     </div>
   `;
@@ -173,9 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalCaption = modal.querySelector(".gallery-modal-caption");
   const closeBtn = modal.querySelector(".gallery-modal-close");
 
-  // Open modal on galleryItem click
-  document.querySelectorAll('.galleryItem').forEach(item => {
-  item.addEventListener('click', () => {
+  function openModalFor(item) {
     const img = item.querySelector('img');
     const fallbackCaption = item.querySelector('p');
     const detailedCaption = img.getAttribute('data-caption');
@@ -187,18 +193,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
     modal.classList.add('open');
     document.body.style.overflow = "hidden";
-  });
-});
+  }
 
-  // Close modal on close button or outside click
-  closeBtn.addEventListener('click', () => {
+  function closeModal() {
     modal.classList.remove('open');
     document.body.style.overflow = "";
+  }
+
+  // Open modal on galleryItem click — also keyboard-accessible (Tab to
+  // focus, Enter/Space to open), since these are plain divs rather than
+  // native buttons/links and wouldn't otherwise be reachable without a
+  // mouse.
+  document.querySelectorAll('.galleryItem').forEach(item => {
+    item.setAttribute('tabindex', '0');
+    item.setAttribute('role', 'button');
+    const caption = item.querySelector('p');
+    if (caption) item.setAttribute('aria-label', `View image: ${caption.textContent}`);
+
+    item.addEventListener('click', () => openModalFor(item));
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openModalFor(item);
+      }
+    });
   });
+
+  // Close modal on close button, outside click, or Escape key
+  closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.classList.remove('open');
-      document.body.style.overflow = "";
-    }
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
   });
 });
