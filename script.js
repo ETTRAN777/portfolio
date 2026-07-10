@@ -228,3 +228,98 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
   });
 });
+
+/* =========================================
+   TYPING ANIMATIONS
+   Hero boot sequence + section-header reveals.
+   Respects prefers-reduced-motion — skips straight
+   to final text if the user has that set.
+   ========================================= */
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function typeInto(el, text, speed, onDone) {
+  if (prefersReducedMotion) {
+    el.textContent = text;
+    if (onDone) onDone();
+    return;
+  }
+  let i = 0;
+  (function step() {
+    if (i <= text.length) {
+      el.textContent = text.slice(0, i);
+      i++;
+      setTimeout(step, speed);
+    } else if (onDone) {
+      onDone();
+    }
+  })();
+}
+
+// Hero boot sequence: type "whoami" at the prompt, then the name types in
+// as if it were the command's output, then role tags reveal one by one.
+document.addEventListener('DOMContentLoaded', () => {
+  const promptText = document.getElementById('heroPromptText');
+  const nameText = document.getElementById('heroNameText');
+  const cursor1 = document.getElementById('cursor1');
+  const cursor2 = document.getElementById('cursor2');
+  const rolesContainer = document.getElementById('heroRoles');
+
+  if (!promptText || !nameText || !rolesContainer) return; // not on this page
+
+  typeInto(promptText, 'whoami', prefersReducedMotion ? 0 : 95, () => {
+    setTimeout(() => {
+      if (cursor1) cursor1.style.display = 'none';
+      if (cursor2) cursor2.style.display = 'inline-block';
+      typeInto(nameText, 'Ethan Tran', prefersReducedMotion ? 0 : 75, () => {
+        const flags = rolesContainer.querySelectorAll('.role-flag');
+        let idx = 0;
+        function revealNext() {
+          if (idx < flags.length) {
+            const flag = flags[idx];
+            flag.textContent = flag.getAttribute('data-text');
+            flag.classList.add('revealed');
+            idx++;
+            setTimeout(revealNext, prefersReducedMotion ? 0 : 200);
+          }
+        }
+        setTimeout(revealNext, prefersReducedMotion ? 0 : 250);
+      });
+    }, prefersReducedMotion ? 0 : 350);
+  });
+});
+
+// Generic "type on load" for simple prompt lines that don't need the
+// multi-stage hero sequence — any element with data-type-text just types
+// itself in once the page loads.
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-type-text]').forEach((el) => {
+    const text = el.getAttribute('data-type-text');
+    typeInto(el, text, prefersReducedMotion ? 0 : 45);
+  });
+});
+
+// Section headers type themselves in once scrolled into view, then stop
+// observing — no re-triggering on scroll back up. Types the plain text,
+// then snaps back to the original styled HTML (with the colored command
+// prefix) once done, so there's no risk of corrupting markup mid-type.
+document.addEventListener('DOMContentLoaded', () => {
+  const headers = document.querySelectorAll('.sectionHeader h2');
+  if (!headers.length || !('IntersectionObserver' in window)) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && !entry.target.dataset.typed) {
+        entry.target.dataset.typed = 'true';
+        const finalHTML = entry.target.innerHTML;
+        const fullText = entry.target.textContent;
+        entry.target.textContent = '';
+        typeInto(entry.target, fullText, prefersReducedMotion ? 0 : 28, () => {
+          entry.target.innerHTML = finalHTML;
+        });
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.4 });
+
+  headers.forEach((h) => observer.observe(h));
+});

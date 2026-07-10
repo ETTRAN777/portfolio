@@ -8,7 +8,7 @@
     <meta property="og:title" content="Ethan Tran • Portfolio" />
     <meta property="og:description" content="Information and Computer Scientist, Game Developer, and Full-Stack Developer. Portfolio of web apps, Unity games, and database projects." />
     <meta property="og:type" content="website" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
     <title>Ethan Tran • Portfolio</title>
     <link rel="stylesheet" href="styles.css" />
 </head>
@@ -47,15 +47,21 @@
     <!-- Hero Section -->
     <header id="hero">
         <div class="hero-content">
-            <h1>Hey, I'm Ethan Tran</h1>
-            <p>Information and Computer Scientist • Game Developer • Full-Stack Developer • Database Practitioner</p>
+            <p class="terminal-prompt"><span class="prompt-symbol">~/ethan-tran $</span> <span id="heroPromptText"></span><span class="cursor-blink" id="cursor1"></span></p>
+            <h1><span id="heroNameText"></span><span class="cursor-blink" id="cursor2" style="display:none;"></span></h1>
+            <div class="role-flags" id="heroRoles">
+                <span class="role-flag" data-text="Information &amp; Computer Scientist"></span>
+                <span class="role-flag" data-text="Game Developer"></span>
+                <span class="role-flag" data-text="Full-Stack Developer"></span>
+                <span class="role-flag" data-text="Database Practitioner"></span>
+            </div>
         </div>
     </header>
 
     <section id="skills">
         <div class="sectionHeader">
             <div class="sectionBegin"></div>
-            <h2>Technical Skills</h2>
+            <h2><span class="cmd-prefix">&gt; cat</span> skills.json</h2>
             <div class="sectionEnd"></div>
         </div>
         <ul class="skills-list">
@@ -105,11 +111,12 @@
     <section id="projects">
         <div class="sectionHeader">
             <div class="sectionBegin"></div>
-            <h2>Projects</h2>
+            <h2><span class="cmd-prefix">&gt; cd</span> ~/projects</h2>
             <div class="sectionEnd"></div>
         </div>
 
         <div class="project-card">
+            <span class="status-tag stable">[STABLE]</span>
             <h3>Tank Tracker - Aquarium Planning & Documentation Platform</h3>
             <ul class="skills-list">
                 <li class="web-language">React</li>
@@ -128,6 +135,24 @@
         </div>
 
         <div class="project-card">
+            <span class="status-tag stable">[STABLE]</span>
+            <h3>Sushi King - Restaurant Website</h3>
+            <ul class="skills-list">
+                <li class="web-language">HTML</li>
+                <li class="web-language">CSS</li>
+                <li class="web-language">JavaScript</li>
+            </ul>
+            <p>Live restaurant website for Sushi King in Rochester Hills, MI — a custom cart system with quantity
+                caps, a JSON-configurable priority queue for promotional modals, and a light/dark theme switcher
+                that automatically follows Michigan lunch hours.
+                <a href="https://ettran777.github.io/SushiKing/" target="_blank">
+                    <p class="resume-btn"><span style="color: white;">Go to Project →</span></p>
+                </a>
+            </p>
+        </div>
+
+        <div class="project-card">
+            <span class="status-tag progress">[IN PROGRESS]</span>
             <h3>Alchemist's Pantry - Recipe by Pantry App</h3>
             <ul class="skills-list">
                 <li class="web-language">React</li>
@@ -139,11 +164,11 @@
             </ul>
             <p>Full-stack web application that pulls recipes based on user-inputted ingredients, utilizing a
                 custom-built recipe generation algorithm and a user-friendly interface.
-                <br>
-                <span class="resume-btn" style="cursor: default; opacity: 0.55;">Coming Soon</span>
+                <br><span class="resume-btn" style="cursor: default; opacity: 0.7;">Coming Soon</span>
             </p>
         </div>
         <div class="project-card">
+            <span class="status-tag wip">[WIP]</span>
             <h3>Volare - 2D Platformer Game</h3>
             <ul class="skills-list">
                 <li class="software-language">C#</li>
@@ -158,6 +183,7 @@
             </p>
         </div>
         <div class="project-card">
+            <span class="status-tag stable">[STABLE]</span>
             <h3>Job Junction</h3>
             <ul class="skills-list">
                 <li class="web-language">HTML</li>
@@ -172,6 +198,7 @@
             </a>
         </div>
         <div class="project-card">
+            <span class="status-tag progress">[IN PROGRESS]</span>
             <h3>Debt and Taxes - 2D Incremental Game</h3>
             <ul class="skills-list">
                 <li class="software-language">C#</li>
@@ -186,6 +213,7 @@
         </div>
 
         <div class="project-card">
+            <span class="status-tag stable">[STABLE]</span>
             <h3>UMD Campus Pantry Website</h3>
             <ul class="skills-list">
                 <li class="web-language">HTML</li>
@@ -202,6 +230,7 @@
         </div>
 
         <div class="project-card">
+            <span class="status-tag stable">[STABLE]</span>
             <h3>MD Club Gymnastics Website</h3>
             <ul class="skills-list">
                 <li class="web-language">HTML</li>
@@ -216,6 +245,7 @@
         </div>
 
         <div class="project-card">
+            <span class="status-tag stable">[STABLE]</span>
             <h3>INST414 Medium Posts</h3>
             <ul class="skills-list">
                 <li class="software-language">Python</li>
@@ -233,7 +263,7 @@
     <section id="education">
         <div class="sectionHeader">
             <div class="sectionBegin"></div>
-            <h2>Relevant Coursework</h2>
+            <h2><span class="cmd-prefix">&gt; ls</span> ~/coursework</h2>
             <div class="sectionEnd"></div>
         </div>
         <div class="side-scrolling-container">
@@ -315,58 +345,59 @@
                             src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
                     </div>
                 </div>
+            </a>
 
-                <a target="_blank"
-                    href="https://app.testudo.umd.edu/soc/search?courseId=cmsc132&sectionId=&termId=202408&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
-                    <div class="course-card">
-                        <h3>CMSC 216: Intro to Computer Systems</h3>
-                        <ul class="skills-list">
-                            <li class="software-language">C</li>
-                            <li class="software-language">x86 Assembly</li>
-                        </ul>
-                        <p>Computer architecture, operating systems, and low-level programming concepts.</p>
-                        <div class="course-footer">
-                            <h4>Taken: Spring 2024</h4>
-                            <img
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
-                        </div>
-                    </div>
-                </a>
-
-                <a target="_blank"
-                    href="https://app.testudo.umd.edu/soc/search?courseId=cmsc132&sectionId=&termId=202408&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
-                    <div class="course-card">
-                        <h3>CMSC 132: OOP II</h3>
-                        <ul class="skills-list">
-                            <li class="software-language">Java</li>
-                        </ul>
-                        <p>Algorithms, data structures, and time complexity optimization.</p>
-                        <div class="course-footer">
-                            <h4>Taken: Fall 2023</h4>
-                            <img
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
-                        </div>
-                    </div>
-                </a>
-
-                <div class="course-card" style="cursor: text;">
-                    <h3>Various INST Courses</h3>
+            <a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=cmsc216&sectionId=&termId=202408&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>CMSC 216: Intro to Computer Systems</h3>
                     <ul class="skills-list">
-                        <li class="software-language">Python</li>
-                        <li class="database">R</li>
-                        <li class="info-sci">User Research</li>
-                        <li class="info-sci">User Testing</li>
-                        <li class="info-sci">Data Analysis Techniques</li>
+                        <li class="software-language">C</li>
+                        <li class="software-language">x86 Assembly</li>
                     </ul>
-                    <p>Various courses covering user research and testing methodologies, as well as R programming for
-                        data
-                        analysis.</p>
+                    <p>Computer architecture, operating systems, and low-level programming concepts.</p>
                     <div class="course-footer">
-                        <h4>Taken: 2022-2024</h4>
+                        <h4>Taken: Spring 2024</h4>
                         <img
                             src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
                     </div>
                 </div>
+            </a>
+
+            <a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=cmsc132&sectionId=&termId=202408&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>CMSC 132: OOP II</h3>
+                    <ul class="skills-list">
+                        <li class="software-language">Java</li>
+                    </ul>
+                    <p>Algorithms, data structures, and time complexity optimization.</p>
+                    <div class="course-footer">
+                        <h4>Taken: Fall 2023</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+            <div class="course-card" style="cursor: text;">
+                <h3>Various INST Courses</h3>
+                <ul class="skills-list">
+                    <li class="software-language">Python</li>
+                    <li class="database">R</li>
+                    <li class="info-sci">User Research</li>
+                    <li class="info-sci">User Testing</li>
+                    <li class="info-sci">Data Analysis Techniques</li>
+                </ul>
+                <p>Various courses covering user research and testing methodologies, as well as R programming for
+                    data
+                    analysis.</p>
+                <div class="course-footer">
+                    <h4>Taken: 2022-2024</h4>
+                    <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                </div>
+            </div>
         </div>
 
 
@@ -375,7 +406,7 @@
     <section id="contact" class="contact-section">
         <div style="align-content: center;" class="sectionHeader">
             <div class="sectionEnd"></div>
-            <h2 style="color: white;">Contact</h2>
+            <h2><span class="cmd-prefix">&gt;</span> contact --info</h2>
             <div class="sectionEnd"></div>
         </div>
         <div class="contact-cards">
