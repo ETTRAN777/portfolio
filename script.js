@@ -271,12 +271,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (cursor1) cursor1.style.display = 'none';
       if (cursor2) cursor2.style.display = 'inline-block';
       typeInto(nameText, 'Ethan Tran', prefersReducedMotion ? 0 : 75, () => {
-        const flags = rolesContainer.querySelectorAll('.role-flag');
+        // .role-divider reveals in the same staggered sequence as the
+        // role flags (matches its DOM position, right after the Recent
+        // Graduate badge) — but only ever gets a .revealed class, never
+        // textContent, since setting that would wipe out its <hr> child.
+        const flags = rolesContainer.querySelectorAll('.role-flag, .role-divider');
         let idx = 0;
         function revealNext() {
           if (idx < flags.length) {
             const flag = flags[idx];
-            flag.textContent = flag.getAttribute('data-text');
+            if (flag.classList.contains('role-flag')) {
+              flag.textContent = flag.getAttribute('data-text');
+            }
             flag.classList.add('revealed');
             idx++;
             setTimeout(revealNext, prefersReducedMotion ? 0 : 200);
