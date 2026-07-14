@@ -323,3 +323,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
   headers.forEach((h) => observer.observe(h));
 });
+
+// Horizontal mouse-wheel scrolling for the education section's card row.
+// A plain mouse only ever fires vertical deltaY on wheel — overflow-x:auto
+// alone doesn't translate that into horizontal movement (only Shift+wheel
+// or a trackpad's native horizontal swipe do), so a normal mouse wheel
+// silently does nothing while hovering the row. This bridges that gap.
+// Guarded with a null check since this container only exists on
+// index.html and script.js is shared across every page.
+document.addEventListener('DOMContentLoaded', () => {
+  const sideScrollContainer = document.querySelector('.side-scrolling-container');
+  if (!sideScrollContainer) return;
+
+  sideScrollContainer.addEventListener('wheel', (e) => {
+    const atLeftEdge = sideScrollContainer.scrollLeft <= 0;
+    const atRightEdge =
+      Math.ceil(sideScrollContainer.scrollLeft + sideScrollContainer.clientWidth) >=
+      sideScrollContainer.scrollWidth;
+    // Only take over the scroll if it would actually move the row —
+    // otherwise let it fall through to normal page scrolling once either
+    // end is reached, instead of trapping the whole page inside the row.
+    const scrollingPastLeftEdge = e.deltaY < 0 && atLeftEdge;
+    const scrollingPastRightEdge = e.deltaY > 0 && atRightEdge;
+    if (scrollingPastLeftEdge || scrollingPastRightEdge) return;
+
+    e.preventDefault();
+    sideScrollContainer.scrollLeft += e.deltaY;
+  }, { passive: false });
+});
