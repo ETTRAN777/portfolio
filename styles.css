@@ -306,6 +306,18 @@ section {
   font-weight: 400;
 }
 
+.cmd-flag {
+  color: var(--amber);
+  font-weight: 500;
+  font-family: var(--font-mono);
+}
+
+.cmd-flag-value {
+  color: var(--rust);
+  font-weight: 400;
+  font-family: var(--font-mono);
+}
+
 .sectionBegin {
   width: 50px;
   border-bottom: 2px solid var(--border);
