@@ -322,6 +322,27 @@ section h2 {
   color: var(--text);
 }
 
+/* Section content reveal — hidden until the section header's typing
+   animation finishes (see script.js), then fades/slides in like the
+   role-flag reveal above. Respects prefers-reduced-motion via the
+   .revealed class being added immediately with no transition delay. */
+.section-content {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.section-content.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-content {
+    transition: none;
+  }
+}
+
 /* Skills Section */
 .skills-list {
   display: flex;
