@@ -454,10 +454,6 @@ section h2 {
   color: var(--rust);
 }
 
-.status-tag.wip {
-  color: var(--amber);
-}
-
 .course-card {
   display: flex;
   flex-direction: column;

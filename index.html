@@ -27,6 +27,7 @@
         <ul id="mobile-nav-list">
             <li><a onclick="handleMobileClick('hero')">Home</a></li>
             <li><a onclick="handleMobileClick('skills')">Skills and Resume</a></li>
+            <li><a onclick="handleMobileClick('experience')">Experience</a></li>
             <li><a onclick="handleMobileClick('projects')">Projects</a></li>
             <li><a onclick="handleMobileClick('education')">Education</a></li>
             <li><a onclick="handleMobileClick('contact')">Contact</a></li>
@@ -38,6 +39,7 @@
         <ul>
             <li><a onclick="scrollToSection('hero')">Home</a></li>
             <li><a onclick="scrollToSection('skills')">Skills and Resume</a></li>
+            <li><a onclick="scrollToSection('experience')">Experience</a></li>
             <li><a onclick="scrollToSection('projects')">Projects</a></li>
             <li><a onclick="scrollToSection('education')">Education</a></li>
             <li><a onclick="scrollToSection('contact')">Contact</a></li>
@@ -115,7 +117,53 @@
                 technical precision.</p>
         </div>
 
-        <a href="ethanTranCurrentResume.pdf" target="_blank" class="resume-btn">Resume PDF</a>
+        <a href="EthanTranResume.pdf" target="_blank" class="resume-btn">Resume PDF</a>
+    </section>
+
+    <section id="experience">
+        <div class="sectionHeader">
+            <div class="sectionBegin"></div>
+            <h2><span class="cmd-prefix">&gt; cat</span> experience.log</h2>
+            <div class="sectionEnd"></div>
+        </div>
+
+        <div class="project-card">
+            <span class="status-tag stable">[COMPLETE]</span>
+            <span class="status-tag stable" style="margin-left:6px; cursor:pointer;" onclick="scrollToSection('education')">[INST 490 CAPSTONE]</span>
+            <h3>LabX, National Academy of Sciences — UI/UX Consultant</h3>
+            <ul class="skills-list">
+                <li class="info-sci">User Research</li>
+                <li class="info-sci">User Testing</li>
+                <li class="info-sci">Data Analysis Techniques</li>
+                <li class="info-sci">Accessibility (WCAG 2.1)</li>
+            </ul>
+            <p>College Park, MD &middot; Sep 2025 &ndash; May 2026. Client-facing consulting engagement completed
+                through UMD's iConsultancy as part of the INST 490 Integrated Capstone course. Served as lead
+                UI/UX analyst for LabX, partnering with National Academy of Sciences stakeholders to identify
+                usability issues and deliver data-driven design recommendations informed by Google Analytics
+                traffic, bounce rate, and engagement metrics. Conducted comprehensive QA and accessibility audits
+                (WCAG 2.1, semantic HTML) and presented a formal Clarity &amp; Usability Assessment report to
+                National Academy of Sciences program leadership.</p>
+        </div>
+
+        <div class="project-card">
+            <span class="status-tag progress">[CURRENT]</span>
+            <h3>Sushi King — Freelance Front-End Developer</h3>
+            <ul class="skills-list">
+                <li class="web-language">HTML</li>
+                <li class="web-language">CSS</li>
+                <li class="web-language">JavaScript</li>
+                <li class="info-sci">Accessibility (WCAG 2.1)</li>
+            </ul>
+            <p>Remote &middot; May 2026 &ndash; Present. Partnered directly with the restaurant's owners to
+                redesign and develop their production website, transforming the brand into a premium, responsive,
+                mobile-first, WCAG-compliant digital experience. Built a lightweight JSON-driven content system so
+                non-technical staff can update site content without touching application code.
+                <a href="https://ettran777.github.io/SushiKing/" target="_blank">
+                    <p class="resume-btn"><span style="color: white;">Go to Project →</span></p>
+                </a>
+            </p>
+        </div>
     </section>
 
     <section id="projects">
@@ -146,23 +194,7 @@
 
         <div class="project-card">
             <span class="status-tag stable">[STABLE]</span>
-            <h3>Sushi King - Restaurant Website</h3>
-            <ul class="skills-list">
-                <li class="web-language">HTML</li>
-                <li class="web-language">CSS</li>
-                <li class="web-language">JavaScript</li>
-            </ul>
-            <p>Live restaurant website for Sushi King in Rochester Hills, MI — a custom cart system with quantity
-                caps, a JSON-configurable priority queue for promotional modals, and a light/dark theme switcher
-                that automatically follows Michigan lunch hours.
-                <a href="https://ettran777.github.io/SushiKing/" target="_blank">
-                    <p class="resume-btn"><span style="color: white;">Go to Project →</span></p>
-                </a>
-            </p>
-        </div>
-
-        <div class="project-card">
-            <span class="status-tag stable">[STABLE]</span>
+            <span class="status-tag stable" style="margin-left:6px; cursor:pointer;" onclick="scrollToSection('education')">[INST 347 FINAL PROJECT]</span>
             <h3>Pokéllect - Cloud-Native Card Collection App</h3>
             <ul class="skills-list">
                 <li class="web-language">React</li>
@@ -198,7 +230,7 @@
             </p>
         </div>
         <div class="project-card">
-            <span class="status-tag wip">[WIP]</span>
+            <span class="status-tag progress">[IN PROGRESS]</span>
             <h3>Volare - 2D Platformer Game</h3>
             <ul class="skills-list">
                 <li class="software-language">C#</li>
@@ -213,7 +245,8 @@
             </p>
         </div>
         <div class="project-card">
-            <span class="status-tag stable">[STABLE]</span>
+            <span class="status-tag progress">[PARTIALLY LIVE]</span>
+            <span class="status-tag stable" style="margin-left:6px; cursor:pointer;" onclick="scrollToSection('education')">[INST 377 FINAL PROJECT]</span>
             <h3>Job Junction</h3>
             <ul class="skills-list">
                 <li class="web-language">HTML</li>
@@ -336,24 +369,6 @@
             </a>
 
 <a target="_blank"
-                href="https://app.testudo.umd.edu/soc/search?courseId=inst410&sectionId=&termId=202601&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
-                <div class="course-card">
-                    <h3>INST 410: Managing with Data and Simulations</h3>
-                    <ul class="skills-list">
-                        <li class="info-sci">Data Analysis Techniques</li>
-                    </ul>
-                    <p>General principles of modeling, data analysis, and decision-making methods for management,
-                        advocacy, and communication contexts — the full analytical funnel from data extraction and
-                        cleaning through interpretation and visualization.</p>
-                    <div class="course-footer">
-                        <h4>Completed: Spring 2026</h4>
-                        <img
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
-                    </div>
-                </div>
-            </a>
-
-<a target="_blank"
                 href="https://app.testudo.umd.edu/soc/search?courseId=inst347&sectionId=&termId=202601&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
                 <div class="course-card">
                     <h3>INST 347: Cloud Computing for Information Science</h3>
@@ -365,46 +380,6 @@
                         and a final project applying cloud services to a real problem.</p>
                     <div class="course-footer">
                         <h4>Completed: Spring 2026</h4>
-                        <img
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
-                    </div>
-                </div>
-            </a>
-
-<a target="_blank"
-                href="https://app.testudo.umd.edu/soc/search?courseId=inst414&sectionId=&termId=202408&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
-                <div class="course-card">
-                    <h3>INST 414: Data Science Techniques</h3>
-                    <ul class="skills-list">
-                        <li class="software-language">Python</li>
-                        <li class="web-language">RestAPI</li>
-                        <li class="info-sci">Data Analysis Techniques</li>
-                    </ul>
-                    <p>Data analysis techniques, data visualization, and the ethical implications of data use.</p>
-                    <div class="course-footer">
-                        <h4>Completed: Fall 2025</h4>
-                        <img
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
-                    </div>
-                </div>
-            </a>
-
-<a target="_blank"
-                href="https://app.testudo.umd.edu/soc/search?courseId=inst362&sectionId=&termId=202508&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
-                <div class="course-card">
-                    <h3>INST 362: User Centered Design</h3>
-                    <ul class="skills-list">
-                        <li class="info-sci">User Research</li>
-                        <li class="info-sci">User Testing</li>
-                        <li class="web-language">HTML</li>
-                        <li class="web-language">CSS</li>
-                        <li class="web-language">JavaScript</li>
-                    </ul>
-                    <p>Designing and implementing user-centered web applications using research-driven design
-                        principles.
-                    </p>
-                    <div class="course-footer">
-                        <h4>Completed: Fall 2025</h4>
                         <img
                             src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
                     </div>
@@ -427,22 +402,6 @@
                         integration.</p>
                     <div class="course-footer">
                         <h4>Completed: Spring 2025</h4>
-                        <img
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
-                    </div>
-                </div>
-            </a>
-
-<a target="_blank"
-                href="https://app.testudo.umd.edu/soc/search?courseId=inst327&sectionId=&termId=202508&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
-                <div class="course-card">
-                    <h3>INST 327: Database Design and Modeling</h3>
-                    <ul class="skills-list">
-                        <li class="database">SQL</li>
-                    </ul>
-                    <p>Database design principles, normalization, and SQL query optimization.</p>
-                    <div class="course-footer">
-                        <h4>Completed: Fall 2024</h4>
                         <img
                             src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
                     </div>
@@ -476,6 +435,118 @@
                     <p>Algorithms, data structures, and time complexity optimization.</p>
                     <div class="course-footer">
                         <h4>Completed: Fall 2023</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+<a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst327&sectionId=&termId=202508&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 327: Database Design and Modeling</h3>
+                    <ul class="skills-list">
+                        <li class="database">SQL</li>
+                    </ul>
+                    <p>Database design principles, normalization, and SQL query optimization.</p>
+                    <div class="course-footer">
+                        <h4>Completed: Fall 2024</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+<a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst414&sectionId=&termId=202408&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 414: Data Science Techniques</h3>
+                    <ul class="skills-list">
+                        <li class="software-language">Python</li>
+                        <li class="web-language">RestAPI</li>
+                        <li class="info-sci">Data Analysis Techniques</li>
+                    </ul>
+                    <p>Data analysis techniques, data visualization, and the ethical implications of data use.</p>
+                    <div class="course-footer">
+                        <h4>Completed: Fall 2025</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+<a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst364&sectionId=&termId=202508&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 364: Human-Centered Cybersecurity</h3>
+                    <ul class="skills-list">
+                        <li class="info-sci">Cybersecurity</li>
+                    </ul>
+                    <p>Overview of human interactions with cybersecurity technology, from users to system
+                        designers — bridging the technical and behavioral sides of security. Covers explanations
+                        for insecure behavior alongside the design and evaluation of tools that help people make
+                        safer choices.</p>
+                    <div class="course-footer">
+                        <h4>Completed: Fall 2025</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+<a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst362&sectionId=&termId=202508&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 362: User Centered Design</h3>
+                    <ul class="skills-list">
+                        <li class="info-sci">User Research</li>
+                        <li class="info-sci">User Testing</li>
+                        <li class="web-language">HTML</li>
+                        <li class="web-language">CSS</li>
+                        <li class="web-language">JavaScript</li>
+                    </ul>
+                    <p>Designing and implementing user-centered web applications using research-driven design
+                        principles.
+                    </p>
+                    <div class="course-footer">
+                        <h4>Completed: Fall 2025</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+<a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst410&sectionId=&termId=202601&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 410: Managing with Data and Simulations</h3>
+                    <ul class="skills-list">
+                        <li class="info-sci">Data Analysis Techniques</li>
+                    </ul>
+                    <p>General principles of modeling, data analysis, and decision-making methods for management,
+                        advocacy, and communication contexts — the full analytical funnel from data extraction and
+                        cleaning through interpretation and visualization.</p>
+                    <div class="course-footer">
+                        <h4>Completed: Spring 2026</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+<a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst346&sectionId=&termId=202508&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 346: Technologies, Infrastructures and Architecture</h3>
+                    <ul class="skills-list">
+                        <li class="info-sci">Networking</li>
+                    </ul>
+                    <p>Basic concepts of computer hardware, systems software, networking, client/server
+                        architectures, cloud computing, distributed systems, and high performance computing as
+                        applied to information-rich domains, with current topics like web environments, IoT, and
+                        security.</p>
+                    <div class="course-footer">
+                        <h4>Completed: Fall 2025</h4>
                         <img
                             src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
                     </div>
