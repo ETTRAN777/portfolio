@@ -306,6 +306,18 @@ section {
   font-weight: 400;
 }
 
+.cmd-flag {
+  color: var(--amber);
+  font-weight: 500;
+  font-family: var(--font-mono);
+}
+
+.cmd-flag-value {
+  color: var(--rust);
+  font-weight: 400;
+  font-family: var(--font-mono);
+}
+
 .sectionBegin {
   width: 50px;
   border-bottom: 2px solid var(--border);
@@ -320,6 +332,27 @@ section h2 {
   font-size: 2rem;
   margin-bottom: 1rem;
   color: var(--text);
+}
+
+/* Section content reveal — hidden until the section header's typing
+   animation finishes (see script.js), then fades/slides in like the
+   role-flag reveal above. Respects prefers-reduced-motion via the
+   .revealed class being added immediately with no transition delay. */
+.section-content {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.section-content.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-content {
+    transition: none;
+  }
 }
 
 /* Skills Section */
@@ -452,10 +485,6 @@ section h2 {
 
 .status-tag.progress {
   color: var(--rust);
-}
-
-.status-tag.wip {
-  color: var(--amber);
 }
 
 .course-card {

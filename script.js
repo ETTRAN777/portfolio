@@ -308,9 +308,20 @@ document.addEventListener('DOMContentLoaded', () => {
 // observing — no re-triggering on scroll back up. Types the plain text,
 // then snaps back to the original styled HTML (with the colored command
 // prefix) once done, so there's no risk of corrupting markup mid-type.
+// Once typing finishes, the section's .section-content (cards, lists,
+// etc.) fades/slides into view — mirrors the reveal-on-scroll behavior
+// used on the Sushi King site, but gated behind the typing animation
+// here instead of a plain viewport check.
 document.addEventListener('DOMContentLoaded', () => {
   const headers = document.querySelectorAll('.sectionHeader h2');
-  if (!headers.length || !('IntersectionObserver' in window)) return;
+  if (!headers.length) return;
+
+  if (!('IntersectionObserver' in window)) {
+    // No animation support — just make sure content isn't stuck at
+    // opacity: 0 forever.
+    document.querySelectorAll('.section-content').forEach((c) => c.classList.add('revealed'));
+    return;
+  }
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -318,9 +329,11 @@ document.addEventListener('DOMContentLoaded', () => {
         entry.target.dataset.typed = 'true';
         const finalHTML = entry.target.innerHTML;
         const fullText = entry.target.textContent;
+        const content = entry.target.closest('section')?.querySelector('.section-content');
         entry.target.textContent = '';
         typeInto(entry.target, fullText, prefersReducedMotion ? 0 : 28, () => {
           entry.target.innerHTML = finalHTML;
+          if (content) content.classList.add('revealed');
         });
         observer.unobserve(entry.target);
       }
