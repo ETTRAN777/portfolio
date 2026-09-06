@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Ethan Tran — Information and Computer Scientist, Game Developer, and Full-Stack Developer. Portfolio of web apps, Unity games, and database projects." />
+    <meta property="og:title" content="Ethan Tran • Portfolio" />
+    <meta property="og:description" content="Information and Computer Scientist, Game Developer, and Full-Stack Developer. Portfolio of web apps, Unity games, and database projects." />
+    <meta property="og:type" content="website" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+    <title>Ethan Tran • Portfolio</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+<div id="overlay" class="overlay"></div>
+
+    <button id="navToggle">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </button>
+
+    <nav id="mobileNavContainer">
+        <ul id="mobile-nav-list">
+            <li><a onclick="handleMobileClick('hero')">Home</a></li>
+            <li><a onclick="handleMobileClick('skills')">Skills and Resume</a></li>
+            <li><a onclick="handleMobileClick('projects')">Projects</a></li>
+            <li><a onclick="handleMobileClick('education')">Education</a></li>
+            <li><a onclick="handleMobileClick('contact')">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Navbar -->
+    <nav id="navbar">
+        <ul>
+            <li><a onclick="scrollToSection('hero')">Home</a></li>
+            <li><a onclick="scrollToSection('skills')">Skills and Resume</a></li>
+            <li><a onclick="scrollToSection('projects')">Projects</a></li>
+            <li><a onclick="scrollToSection('education')">Education</a></li>
+            <li><a onclick="scrollToSection('contact')">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="hero">
+        <div class="hero-content">
+            <p class="terminal-prompt"><span class="prompt-symbol">~/ethan-tran $</span> <span id="heroPromptText"></span><span class="cursor-blink" id="cursor1"></span></p>
+            <h1><span id="heroNameText"></span><span class="cursor-blink" id="cursor2" style="display:none;"></span></h1>
+            <div class="role-flags" id="heroRoles">
+                <span class="role-flag sparkly" data-text="Recent Graduate"></span>
+                <span class="role-divider"><hr></span>
+                <span class="role-flag" data-text="Information &amp; Computer Scientist"></span>
+                <span class="role-flag" data-text="Full-Stack Developer"></span>
+                <span class="role-flag" data-text="Database Practitioner"></span>
+                <span class="role-flag" data-text="Data Scientist/Analyst"></span>
+                <span class="role-flag" data-text="Game Developer"></span>
+            </div>
+        </div>
+    </header>
+
+    <section id="skills">
+        <div class="sectionHeader">
+            <div class="sectionBegin"></div>
+            <h2><span class="cmd-prefix">&gt; cat</span> skills.json</h2>
+            <div class="sectionEnd"></div>
+        </div>
+        <ul class="skills-list">
+            <li class="software-language">Java</li>
+            <li class="software-language">C#</li>
+            <li class="software-language">Unity</li>
+            <li class="software-language">C</li>
+            <li class="software-language">Python</li>
+            <li class="software-language">x86 Assembly</li>
+            <li class="database">R</li>
+            <li class="database">SQL</li>
+            <li class="database">Cloudflare D1</li>
+            <li class="database">Cosmos DB</li>
+            <li class="web-language">HTML</li>
+            <li class="web-language">CSS</li>
+            <li class="web-language">JavaScript</li>
+            <li class="web-language">NodeJS</li>
+            <li class="web-language">ExpressJS</li>
+            <li class="web-language">React</li>
+            <li class="web-language">Tailwind CSS</li>
+            <li class="web-language">TypeScript</li>
+            <li class="web-language">Recharts</li>
+            <li class="web-language">Cloudflare</li>
+            <li class="web-language">Azure Functions</li>
+            <li class="web-language">Cloud Computing</li>
+            <li class="web-language">RestAPI</li>
+            <li class="info-sci">User Research</li>
+            <li class="info-sci">User Testing</li>
+            <li class="info-sci">Data Analysis Techniques</li>
+            <li class="info-sci">Capstone Project</li>
+            <li class="info-sci">Accessibility (WCAG 2.1)</li>
+        </ul>
+
+        <div class="description">
+            <br><br>
+            <p>I'm an information and computer scientist with a growing focus on web development and database
+                design — my day-to-day work has shifted toward React and TypeScript, building on a foundation in
+                Java, C, SQL, and the core front-end trio of HTML, CSS, and JavaScript. Game development, particularly
+                in C#, is where I got my start and still enjoy building in, but web and database work is where most
+                of my energy goes today. I'm passionate about the structured, problem-solving nature of software
+                development and enjoy the challenge of crafting efficient, elegant solutions to complex technical
+                problems.</p>
+            <br>
+            <p>In my free time, I enjoy improving my own sites and developing games as a creative outlet — these
+                days I'm rarely on the other side of the controller, having traded most of my video game time for
+                the aquarium hobby instead. Tending my tanks has become my actual way to unwind, filling the spot
+                gaming used to hold. Web design is another area I'm passionate about, blending visual design with
+                technical precision.</p>
+        </div>
+
+        <a href="ethanTranCurrentResume.pdf" target="_blank" class="resume-btn">Resume PDF</a>
+    </section>
+
+    <section id="projects">
+        <div class="sectionHeader">
+            <div class="sectionBegin"></div>
+            <h2><span class="cmd-prefix">&gt; cd</span> ~/projects</h2>
+            <div class="sectionEnd"></div>
+        </div>
+
+        <div class="project-card">
+            <span class="status-tag stable">[STABLE]</span>
+            <h3>Tank Tracker - Aquarium Planning & Documentation Platform</h3>
+            <ul class="skills-list">
+                <li class="web-language">React</li>
+                <li class="web-language">TypeScript</li>
+                <li class="web-language">Tailwind CSS</li>
+                <li class="web-language">Recharts</li>
+            </ul>
+            <p>Static web app for planning and journaling freshwater aquarium builds — multi-tank support, fully
+                customizable tracking fields, a dependency-aware build checklist with roster-status gating,
+                auto-charted water parameters, and a branching questionnaire that recommends a starting roster based
+                on species and desired care commitment.
+                <a href="https://ettran777.github.io/aquariumTool/" target="_blank">
+                    <p class="resume-btn"><span style="color: white;">Go to Project →</span></p>
+                </a>
+            </p>
+        </div>
+
+        <div class="project-card">
+            <span class="status-tag stable">[STABLE]</span>
+            <h3>Sushi King - Restaurant Website</h3>
+            <ul class="skills-list">
+                <li class="web-language">HTML</li>
+                <li class="web-language">CSS</li>
+                <li class="web-language">JavaScript</li>
+            </ul>
+            <p>Live restaurant website for Sushi King in Rochester Hills, MI — a custom cart system with quantity
+                caps, a JSON-configurable priority queue for promotional modals, and a light/dark theme switcher
+                that automatically follows Michigan lunch hours.
+                <a href="https://ettran777.github.io/SushiKing/" target="_blank">
+                    <p class="resume-btn"><span style="color: white;">Go to Project →</span></p>
+                </a>
+            </p>
+        </div>
+
+        <div class="project-card">
+            <span class="status-tag stable">[STABLE]</span>
+            <h3>Pokéllect - Cloud-Native Card Collection App</h3>
+            <ul class="skills-list">
+                <li class="web-language">React</li>
+                <li class="web-language">JavaScript</li>
+                <li class="web-language">Azure Functions</li>
+                <li class="database">Cosmos DB</li>
+                <li class="web-language">RestAPI</li>
+            </ul>
+            <p>Co-developed cloud-native platform for tracking card collections across 9 different card IPs through a
+                unified API — Pokémon is the primary focus, but every IP is handled with equal depth. Secure
+                bcrypt-hashed account authentication, on-platform messaging, friending, account privacy controls, and
+                full collection management on a NoSQL backend.
+                <a href="https://mango-meadow-07a2e9f10.7.azurestaticapps.net/home" target="_blank">
+                    <p class="resume-btn"><span style="color: white;">Go to Project →</span></p>
+                </a>
+            </p>
+        </div>
+
+        <div class="project-card">
+            <span class="status-tag progress">[IN PROGRESS]</span>
+            <h3>Alchemist's Pantry - Recipe by Pantry App</h3>
+            <ul class="skills-list">
+                <li class="web-language">React</li>
+                <li class="web-language">Tailwind CSS</li>
+                <li class="web-language">TypeScript</li>
+                <li class="web-language">Cloudflare</li>
+                <li class="web-language">RestAPI</li>
+                <li class="database">Cloudflare D1</li>
+            </ul>
+            <p>Full-stack web application that pulls recipes based on user-inputted ingredients, utilizing a
+                custom-built recipe generation algorithm and a user-friendly interface.
+                <br><span class="resume-btn" style="cursor: default; opacity: 0.7;">Coming Soon</span>
+            </p>
+        </div>
+        <div class="project-card">
+            <span class="status-tag wip">[WIP]</span>
+            <h3>Volare - 2D Platformer Game</h3>
+            <ul class="skills-list">
+                <li class="software-language">C#</li>
+                <li class="software-language">Unity</li>
+                <li class="info-sci">User Research</li>
+                <li class="info-sci">User Testing</li>
+            </ul>
+            <p>Game development project: core mechanics, GUI, dialogue, cutscenes, and character movement and abilities.
+                <a href="/portfolio/gallery.html">
+                    <p class="resume-btn"><span style="color: white;">Go to Gallery →</span></p>
+                </a>
+            </p>
+        </div>
+        <div class="project-card">
+            <span class="status-tag stable">[STABLE]</span>
+            <h3>Job Junction</h3>
+            <ul class="skills-list">
+                <li class="web-language">HTML</li>
+                <li class="web-language">CSS</li>
+                <li class="web-language">JavaScript</li>
+                <li class="web-language">NodeJS</li>
+                <li class="web-language">RestAPI</li>
+            </ul>
+            <p>Polished job searching site utilizing various API and JS Libraries</p>
+            <a href="https://inst-377-final-project-alpha-amber.vercel.app/" target="_blank">
+                <p class="resume-btn" style="color: white;">Go to Project →</p>
+            </a>
+        </div>
+        <div class="project-card">
+            <span class="status-tag progress">[IN PROGRESS]</span>
+            <h3>Debt and Taxes - 2D Incremental Game</h3>
+            <ul class="skills-list">
+                <li class="software-language">C#</li>
+                <li class="software-language">Unity</li>
+                <li class="info-sci">User Research</li>
+                <li class="info-sci">User Testing</li>
+            </ul>
+            <p>Core Game development: Gameplay mechanics, GUI, ingame time and threat system.</p>
+            <a href="/portfolio/gallery.html">
+                <p class="resume-btn"><span style="color: white;">Go to Gallery →</span></p>
+            </a>
+        </div>
+
+        <div class="project-card">
+            <span class="status-tag stable">[STABLE]</span>
+            <h3>UMD Campus Pantry Website</h3>
+            <ul class="skills-list">
+                <li class="web-language">HTML</li>
+                <li class="web-language">CSS</li>
+                <li class="web-language">JavaScript</li>
+                <li class="info-sci">User Research</li>
+                <li class="info-sci">User Testing</li>
+            </ul>
+            <p>Responsive design, modern UI, single page application, and mobile-friendly, made in INST362 for clients
+            </p>
+            <a href="https://ettran777.github.io/UMDCampusPantry" target="_blank">
+                <p class="resume-btn"><span style="color: white;">Go to Project →</span></p>
+            </a>
+        </div>
+
+        <div class="project-card">
+            <span class="status-tag stable">[STABLE]</span>
+            <h3>MD Club Gymnastics Website</h3>
+            <ul class="skills-list">
+                <li class="web-language">HTML</li>
+                <li class="web-language">CSS</li>
+                <li class="web-language">JavaScript</li>
+            </ul>
+            <p>Responsive design, modern UI, single page application, and mobile-friendly, developed during a volunteer
+                role for UMD Club Gymnastics</p>
+            <a href="https://mdclubgymnastics.github.io/mdclubgymnasticswebsite/" target="_blank">
+                <p class="resume-btn"><span style="color: white;">Go to Project →</span></p>
+            </a>
+        </div>
+
+        <div class="project-card">
+            <span class="status-tag stable">[STABLE]</span>
+            <h3>INST414 Medium Posts</h3>
+            <ul class="skills-list">
+                <li class="software-language">Python</li>
+                <li class="web-language">RestAPI</li>
+                <li class="info-sci">Data Analysis Techniques</li>
+            </ul>
+            <p>Medium Posts utilizing different Data Analysis Techniques on a wide range of topics</p>
+            <a href="https://medium.com/@etran124" target="_blank">
+                <p class="resume-btn"><span style="color: white;">Go to Medium →</span></p>
+            </a>
+        </div>
+
+    </section>
+
+    <section id="education">
+        <div class="sectionHeader">
+            <div class="sectionBegin"></div>
+            <h2><span class="cmd-prefix">&gt; ls</span> ~/coursework</h2>
+            <div class="sectionEnd"></div>
+        </div>
+        <div class="project-card">
+            <span class="status-tag stable">[COMPLETE]</span>
+            <h3>University of Maryland, College Park</h3>
+            <p>Bachelor of Science, Information Science</p>
+            <div class="course-footer">
+                <h4>Aug 2022 &ndash; May 2026 &middot; College Park, MD</h4>
+                <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+            </div>
+        </div>
+        <div class="side-scrolling-container">
+            <a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst490&sectionId=&termId=202601&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 490: Integrated Capstone — UI/UX Consultant, LabX (National Academy of Sciences)</h3>
+                    <ul class="skills-list">
+                        <li class="info-sci">User Research</li>
+                        <li class="info-sci">User Testing</li>
+                        <li class="info-sci">Data Analysis Techniques</li>
+                        <li class="info-sci">Accessibility (WCAG 2.1)</li>
+                        <li class="web-language">HTML</li>
+                        <li class="web-language">CSS</li>
+                        <li class="web-language">JavaScript</li>
+                    </ul>
+                    <p>UMD iConsultancy engagement as lead UI/UX analyst for LabX, partnering with National Academy
+                        of Sciences stakeholders to diagnose usability issues and deliver data-driven design
+                        recommendations. Analyzed Google Analytics data (traffic sources, bounce rates, engagement)
+                        to identify retention challenges, ran QA and WCAG 2.1 accessibility audits, and redesigned
+                        information architecture and navigation flows. Built high-fidelity HTML/CSS/JS prototypes
+                        (demo deliverables, not production-implemented) and a formal Clarity &amp; Usability
+                        Assessment report presented to NAS program leadership.</p>
+                    <div class="course-footer">
+                        <h4>Completed: Spring 2026</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+<a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst410&sectionId=&termId=202601&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 410: Managing with Data and Simulations</h3>
+                    <ul class="skills-list">
+                        <li class="info-sci">Data Analysis Techniques</li>
+                    </ul>
+                    <p>General principles of modeling, data analysis, and decision-making methods for management,
+                        advocacy, and communication contexts — the full analytical funnel from data extraction and
+                        cleaning through interpretation and visualization.</p>
+                    <div class="course-footer">
+                        <h4>Completed: Spring 2026</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+<a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst347&sectionId=&termId=202601&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 347: Cloud Computing for Information Science</h3>
+                    <ul class="skills-list">
+                        <li class="web-language">Cloud Computing</li>
+                    </ul>
+                    <p>Foundations and operation of cloud computing for information science applications — core
+                        cloud functions (compute, storage, databases, networking), a comparison of major providers,
+                        and a final project applying cloud services to a real problem.</p>
+                    <div class="course-footer">
+                        <h4>Completed: Spring 2026</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+<a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst414&sectionId=&termId=202408&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 414: Data Science Techniques</h3>
+                    <ul class="skills-list">
+                        <li class="software-language">Python</li>
+                        <li class="web-language">RestAPI</li>
+                        <li class="info-sci">Data Analysis Techniques</li>
+                    </ul>
+                    <p>Data analysis techniques, data visualization, and the ethical implications of data use.</p>
+                    <div class="course-footer">
+                        <h4>Completed: Fall 2025</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+<a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst362&sectionId=&termId=202508&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 362: User Centered Design</h3>
+                    <ul class="skills-list">
+                        <li class="info-sci">User Research</li>
+                        <li class="info-sci">User Testing</li>
+                        <li class="web-language">HTML</li>
+                        <li class="web-language">CSS</li>
+                        <li class="web-language">JavaScript</li>
+                    </ul>
+                    <p>Designing and implementing user-centered web applications using research-driven design
+                        principles.
+                    </p>
+                    <div class="course-footer">
+                        <h4>Completed: Fall 2025</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+<a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst377&sectionId=&termId=202508&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 377: Dynamic Web Applications</h3>
+                    <ul class="skills-list">
+                        <li class="web-language">HTML</li>
+                        <li class="web-language">CSS</li>
+                        <li class="web-language">JavaScript</li>
+                        <li class="web-language">NodeJS</li>
+                        <li class="web-language">ExpressJS</li>
+                        <li class="web-language">RestAPI</li>
+                    </ul>
+                    <p>Full-stack web development, including front-end frameworks, back-end development, and database
+                        integration.</p>
+                    <div class="course-footer">
+                        <h4>Completed: Spring 2025</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+<a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=inst327&sectionId=&termId=202508&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>INST 327: Database Design and Modeling</h3>
+                    <ul class="skills-list">
+                        <li class="database">SQL</li>
+                    </ul>
+                    <p>Database design principles, normalization, and SQL query optimization.</p>
+                    <div class="course-footer">
+                        <h4>Completed: Fall 2024</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+<a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=cmsc216&sectionId=&termId=202408&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>CMSC 216: Intro to Computer Systems</h3>
+                    <ul class="skills-list">
+                        <li class="software-language">C</li>
+                        <li class="software-language">x86 Assembly</li>
+                    </ul>
+                    <p>Computer architecture, operating systems, and low-level programming concepts.</p>
+                    <div class="course-footer">
+                        <h4>Completed: Spring 2024</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+<a target="_blank"
+                href="https://app.testudo.umd.edu/soc/search?courseId=cmsc132&sectionId=&termId=202408&_openSectionsOnly=on&creditCompare=%3E%3D&credits=0.0&courseLevelFilter=ALL&instructor=&_facetoface=on&_blended=on&_online=on&courseStartCompare=&courseStartHour=&courseStartMin=&courseStartAM=&courseEndHour=&courseEndMin=&courseEndAM=&teachingCenter=ALL&_classDay1=on&_classDay2=on&_classDay3=on&_classDay4=on&_classDay5=on">
+                <div class="course-card">
+                    <h3>CMSC 132: OOP II</h3>
+                    <ul class="skills-list">
+                        <li class="software-language">Java</li>
+                    </ul>
+                    <p>Algorithms, data structures, and time complexity optimization.</p>
+                    <div class="course-footer">
+                        <h4>Completed: Fall 2023</h4>
+                        <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                    </div>
+                </div>
+            </a>
+
+<div class="course-card" style="cursor: text;">
+                <h3>Various INST Courses</h3>
+                <ul class="skills-list">
+                    <li class="software-language">Python</li>
+                    <li class="database">R</li>
+                    <li class="info-sci">User Research</li>
+                    <li class="info-sci">User Testing</li>
+                    <li class="info-sci">Data Analysis Techniques</li>
+                </ul>
+                <p>Various courses covering user research and testing methodologies, as well as R programming for
+                    data
+                    analysis.</p>
+                <div class="course-footer">
+                    <h4>Completed: 2022-2024</h4>
+                    <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Maryland_Terrapins_logo.svg/250px-Maryland_Terrapins_logo.svg.png">
+                </div>
+            </div>
+        </div>
+
+
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div style="align-content: center;" class="sectionHeader">
+            <div class="sectionEnd"></div>
+            <h2><span class="cmd-prefix">&gt;</span> contact --info</h2>
+            <div class="sectionEnd"></div>
+        </div>
+        <div class="contact-cards">
+            <div class="contact-card">
+                <span class="label personal">PERSONAL</span>
+                <p>etmbox@gmail.com</p>
+            </div>
+            <div class="contact-card">
+                <span class="label university">UNIVERSITY</span>
+                <p>etran124@terpmail.umd.edu</p>
+            </div>
+        </div>
+
+        <div class="social-icons">
+            <a href="https://github.com/ETTRAN777" target="_blank">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="mailto:etmbox@gmail.com">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>Copyright © 2026 | Built and designed by Ethan Tran | All Rights Reserved</p>
+    </footer>
+
+    <!-- Place this at the end of body for best performance -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
