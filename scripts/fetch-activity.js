@@ -43,6 +43,15 @@ function truncate(str) {
   return trimmed.length > MAX_EXTRA_LENGTH ? `${trimmed.slice(0, MAX_EXTRA_LENGTH).trim()}…` : trimmed;
 }
 
+function ghHeaders() {
+  return {
+    Accept: 'application/vnd.github+json',
+    ...(TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {}),
+    'X-GitHub-Api-Version': '2022-11-28',
+    'User-Agent': 'portfolio-activity-fetcher',
+  };
+}
+
 // Mirrors the shape script.js expects — message/repo/extra text here is
 // raw, UNescaped plain text. Escaping happens exactly once, client-side,
 // at render time, so this file stays human-readable if you ever open it.
@@ -50,22 +59,43 @@ function truncate(str) {
 // extra/extraLabel carry whatever additional body text a source has:
 // a push's later "-m" messages become "Patch notes", a PR/release/issue's
 // description becomes "Details". Both surface in the modal in script.js.
-function normalizeEvent(event) {
+//
+// IMPORTANT: GitHub's public Events API payload for PushEvent no longer
+// includes a `commits` array or `size` — as of some point in 2026 it only
+// gives `head`/`before` SHAs (likely a platform-side privacy/payload-size
+// change). So for pushes we make one extra call per event to the compare
+// API (/compare/{before}...{head}) to get the actual commit list back.
+// This is why normalizeEvent is async — every other event type's payload
+// (PR/release/issue) is still fully populated and needs no extra call.
+async function normalizeEvent(event) {
   const repo = repoShortName(event.repo.name);
   const base = { source: 'github', repo, date: event.created_at };
 
   switch (event.type) {
     case 'PushEvent': {
-      const commits = event.payload.commits || [];
+      const { head, before } = event.payload;
+      if (!head || !before) return null;
+      let compareData;
+      try {
+        const res = await fetch(`https://api.github.com/repos/${event.repo.name}/compare/${before}...${head}`, {
+          headers: ghHeaders(),
+        });
+        if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+        compareData = await res.json();
+      } catch (err) {
+        console.warn(`  ! could not fetch commit details for push ${event.id} in ${event.repo.name}: ${err.message}`);
+        return null;
+      }
+      const commits = compareData.commits || [];
       if (!commits.length) return null;
       const latest = commits[commits.length - 1];
-      const lines = (latest.message || '').split('\n');
+      const lines = (latest.commit.message || '').split('\n');
       const firstLine = lines[0];
       // `git commit -m "Title" -m "body 1" -m "body 2"` joins subsequent
       // -m messages as separate paragraphs after the first line — that's
       // exactly what we want to surface as patch notes.
       const patchNotes = truncate(lines.slice(1).join('\n'));
-      const count = event.payload.size || commits.length;
+      const count = compareData.total_commits || commits.length;
       return {
         ...base,
         tagClass: 'push',
@@ -75,7 +105,7 @@ function normalizeEvent(event) {
           : `Pushed a commit: "${firstLine}"`,
         extra: patchNotes,
         extraLabel: patchNotes ? 'Patch notes' : null,
-        url: latest.sha ? `https://github.com/${event.repo.name}/commit/${latest.sha}` : null,
+        url: latest.html_url || `https://github.com/${event.repo.name}/commit/${latest.sha}`,
       };
     }
     case 'PullRequestEvent': {
@@ -126,16 +156,12 @@ function normalizeEvent(event) {
 
 async function fetchRepoEvents(repo) {
   const res = await fetch(`https://api.github.com/repos/${repo}/events`, {
-    headers: {
-      Accept: 'application/vnd.github+json',
-      ...(TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {}),
-      'X-GitHub-Api-Version': '2022-11-28',
-      'User-Agent': 'portfolio-activity-fetcher',
-    },
+    headers: ghHeaders(),
   });
   if (!res.ok) throw new Error(`${repo}: ${res.status} ${res.statusText}`);
   const raw = await res.json();
-  return raw.map(normalizeEvent).filter(Boolean).slice(0, MAX_EVENTS_PER_REPO);
+  const normalized = await Promise.all(raw.map((event) => normalizeEvent(event)));
+  return normalized.filter(Boolean).slice(0, MAX_EVENTS_PER_REPO);
 }
 
 function loadExistingCache() {
