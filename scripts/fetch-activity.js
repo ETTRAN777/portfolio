@@ -96,13 +96,25 @@ async function normalizeEvent(event) {
       // exactly what we want to surface as patch notes.
       const patchNotes = truncate(lines.slice(1).join('\n'));
       const count = compareData.total_commits || commits.length;
+      // The compare response's `files` array (already fetched, no extra
+      // call) has per-file additions/deletions — summing gives the whole
+      // push's diffstat. GitHub omits `files` for very large diffs
+      // (marks `.diff_url`/`.patch_url` instead), so this can be null.
+      const files = compareData.files || null;
+      const additions = files ? files.reduce((sum, f) => sum + (f.additions || 0), 0) : null;
+      const deletions = files ? files.reduce((sum, f) => sum + (f.deletions || 0), 0) : null;
       return {
         ...base,
         tagClass: 'push',
         tagLabel: 'PUSH',
-        message: count > 1
-          ? `Pushed ${count} commits — latest: "${firstLine}"`
-          : `Pushed a commit: "${firstLine}"`,
+        // No "Pushed a commit:" prefix — the PUSH tag already says that,
+        // repeating it in the title is just noise. Title is the commit
+        // message itself; commitCount (used for tile sizing and shown
+        // next to the repo name) is how multi-commit pushes are conveyed.
+        message: firstLine,
+        commitCount: count,
+        additions,
+        deletions,
         extra: patchNotes,
         extraLabel: patchNotes ? 'Patch notes' : null,
         url: latest.html_url || `https://github.com/${event.repo.name}/commit/${latest.sha}`,
@@ -128,7 +140,11 @@ async function normalizeEvent(event) {
         ...base,
         tagClass: 'release',
         tagLabel: 'RELEASE',
-        message: `Published release ${rel.tag_name}${rel.name ? `: "${rel.name}"` : ''}`,
+        // No "Published release" prefix — we only ever surface published
+        // releases (the action !== 'published' check above filters
+        // everything else out), so the RELEASE tag alone already implies
+        // it, same reasoning as dropping "Pushed a commit:" for pushes.
+        message: rel.name ? `${rel.tag_name}: "${rel.name}"` : rel.tag_name,
         extra: details,
         extraLabel: details ? 'Release notes' : null,
         url: rel.html_url,
@@ -201,6 +217,10 @@ async function main() {
   // Merge freshly-fetched events with everything already cached, so a
   // quiet day (or a repo with infrequent commits) doesn't shrink the
   // feed — history accumulates across runs instead of being replaced.
+  // Trim is purely by recency across ALL repos combined — no per-repo
+  // fairness/balancing. If one repo is genuinely the most active lately,
+  // the feed should reflect that truthfully rather than artificially
+  // holding slots open for quieter repos.
   const merged = new Map();
   for (const event of [...(existing.events || []), ...allEvents]) {
     merged.set(eventKey(event), event);

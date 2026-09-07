@@ -1236,6 +1236,29 @@ footer {
   opacity: 0.85;
 }
 
+.activity-tile-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.activity-tile-diffstat {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.diff-add {
+  color: var(--teal);
+}
+
+.diff-del {
+  color: var(--text-muted);
+}
+
 .activity-tile-title-row {
   display: flex;
   align-items: center;
@@ -1307,6 +1330,29 @@ footer {
   color: var(--text);
 }
 
+.activity-modal-cli {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text);
+  margin: 0.25rem 0 1.1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.activity-modal-cli .cli-prompt {
+  color: var(--teal);
+  margin-right: 0.3rem;
+}
+
+.activity-modal-body {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.activity-modal-body.revealed {
+  opacity: 1;
+}
+
 .activity-modal-photo {
   width: 100%;
   border-radius: 8px;
@@ -1339,8 +1385,57 @@ footer {
   margin-top: 0.85rem;
 }
 
-.activity-modal-extra-label + p {
+.activity-modal-extra-label + p,
+.activity-modal-extra-label + .activity-patch-tree {
   margin-top: 0.3rem;
+}
+
+.activity-patch-tree {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.activity-patch-tree .tree-item {
+  position: relative;
+  padding-left: 1.2em;
+  line-height: 1.6;
+}
+
+.activity-patch-tree .tree-item:not(:last-child) {
+  padding-bottom: 0.55em;
+}
+
+/* Vertical trunk line — anchored to a fixed height (matching the tick's
+   fixed position below) rather than percentages, so adding padding-bottom
+   for spacing between messages doesn't drag the branch point down with
+   it. Non-last items span the full box (text + trailing padding) so the
+   line touches the next item's box exactly, with no gap. */
+.activity-patch-tree .tree-item::before {
+  content: '';
+  position: absolute;
+  left: 0.4em;
+  top: 0;
+  height: 0.8em;
+  width: 1px;
+  background: var(--teal);
+}
+
+.activity-patch-tree .tree-item:not(:last-child)::before {
+  height: 100%;
+}
+
+/* Horizontal tick connecting the trunk to the text — fixed at 0.8em from
+   the top (roughly the vertical center of the first text line) so it
+   stays put regardless of any trailing padding-bottom on the box. */
+.activity-patch-tree .tree-item::after {
+  content: '';
+  position: absolute;
+  left: 0.4em;
+  top: 0.8em;
+  width: 0.5em;
+  height: 1px;
+  background: var(--teal);
 }
 
 .activity-modal .activity-meta {

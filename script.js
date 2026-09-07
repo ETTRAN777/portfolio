@@ -429,15 +429,47 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // Tile size varies by type/significance, not uniformly — releases and
-  // photo notes are the "big" tiles, PRs/issues/plain notes are medium,
-  // routine pushes (the most frequent event) stay small. Combined with
-  // flex-wrap this gives an uneven bento-grid look while staying a real
-  // flex-based grid, not absolute-positioned masonry.
+  // photo notes are the "big" tiles, PRs/issues/plain notes are medium.
+  // Pushes vary by actual content: a multi-commit push or one with patch
+  // notes gets more visual weight than a single quiet commit, since in
+  // practice pushes dominate the real feed and uniform-small pushes would
+  // flatten the whole grid into one size. Combined with flex-wrap this
+  // gives an uneven bento-grid look while staying a real flex-based grid,
+  // not absolute-positioned masonry.
   function tileSizeClass(item) {
     if (item.tagClass === 'release') return 'size-lg';
     if (item.source === 'editorial') return item.photo ? 'size-lg' : 'size-md';
     if (item.tagClass === 'pr' || item.tagClass === 'issue') return 'size-md';
+    if (item.tagClass === 'push') {
+      const count = item.commitCount || 1;
+      if (count >= 5 || (item.extra && item.extra.length > 200)) return 'size-lg';
+      if (count >= 2 || item.extra) return 'size-md';
+      return 'size-sm';
+    }
     return 'size-sm';
+  }
+
+  // For a push, "N commits" is useful info that used to live in the title
+  // text ("Pushed N commits — latest: ...") — now that the title is just
+  // the commit message itself, this small helper surfaces the count next
+  // to the repo name instead, e.g. "aquariumTool · 3 commits".
+  function repoLine(item) {
+    const repo = escapeHtml(item.repo);
+    if (item.tagClass === 'push' && item.commitCount > 1) {
+      return `${repo} &middot; ${item.commitCount} commits`;
+    }
+    return repo;
+  }
+
+  // Diffstat for a push, e.g. "+120" or "+120 -8" — deletions are only
+  // shown when there actually are any; a push with zero deletions just
+  // shows the insertions alone rather than a redundant "-0".
+  function diffStatHtml(item) {
+    if (item.tagClass !== 'push' || item.additions == null || item.deletions == null) return '';
+    if (item.additions === 0 && item.deletions === 0) return '';
+    const parts = [`<span class="diff-add">+${item.additions}</span>`];
+    if (item.deletions > 0) parts.push(`<span class="diff-del">-${item.deletions}</span>`);
+    return parts.join(' ');
   }
 
   // activity-cache.json is written by the daily Action — see
@@ -478,6 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function tileHtml(item, idx) {
     const sizeClass = tileSizeClass(item);
+    const diffStat = diffStatHtml(item);
     if (item.photo) {
       return `
         <button type="button" class="activity-tile ${sizeClass} has-photo tag-${item.tagClass}" style="background-image:url('${item.photo}')" data-idx="${idx}">
@@ -486,7 +519,10 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="activity-tag tag-${item.tagClass}">${item.tagLabel}</span>
               <span class="activity-tile-title">${escapeHtml(item.message)}</span>
             </div>
-            <span class="activity-tile-repo">${escapeHtml(item.repo)}</span>
+            <div class="activity-tile-meta-row">
+              <span class="activity-tile-repo">${repoLine(item)}</span>
+              ${diffStat ? `<span class="activity-tile-diffstat">${diffStat}</span>` : ''}
+            </div>
           </div>
         </button>
       `;
@@ -499,7 +535,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="activity-tag tag-${item.tagClass}">${item.tagLabel}</span>
             <span class="activity-tile-title">${escapeHtml(item.message)}</span>
           </div>
-          <span class="activity-tile-repo">${escapeHtml(item.repo)}</span>
+          <div class="activity-tile-meta-row">
+            <span class="activity-tile-repo">${repoLine(item)}</span>
+            ${diffStat ? `<span class="activity-tile-diffstat">${diffStat}</span>` : ''}
+          </div>
         </div>
       </button>
 
@@ -511,6 +550,29 @@ document.addEventListener('DOMContentLoaded', () => {
   // rebuilding the DOM node each time.
   let modalOverlay = null;
   let modalContent = null;
+  let modalCliText = null;
+  let modalCursor = null;
+  let modalTypingGen = 0; // guards against overlapping typing if tiles are clicked in quick succession
+
+  // Derives a plausible CLI command for "opening" this item, using the
+  // real id pulled from its GitHub URL where possible — a commit gets
+  // `git show <sha>`, a PR gets `gh pr view <number>`, etc. Editorial
+  // notes have no such id (they're not GitHub objects), so they fall
+  // back to a generic-looking placeholder instead.
+  function deriveCliCommand(item) {
+    if (item.url) {
+      try {
+        const parts = new URL(item.url).pathname.split('/').filter(Boolean);
+        const kind = parts[2];
+        if (kind === 'commit' && parts[3]) return `git show ${parts[3].slice(0, 7)}`;
+        if (kind === 'pull' && parts[3]) return `gh pr view ${parts[3]}`;
+        if (kind === 'issues' && parts[3]) return `gh issue view ${parts[3]}`;
+        if (kind === 'releases' && parts[3] === 'tag' && parts[4]) return `gh release view ${parts[4]}`;
+      } catch (_) { /* malformed url — fall through to generic */ }
+    }
+    const randomId = Math.floor(100000 + Math.random() * 900000);
+    return `open commit-${randomId}`;
+  }
 
   function ensureModal() {
     if (modalOverlay) return;
@@ -520,11 +582,14 @@ document.addEventListener('DOMContentLoaded', () => {
     modalOverlay.innerHTML = `
       <div class="activity-modal" role="dialog" aria-modal="true" aria-labelledby="activityModalTitle">
         <button type="button" class="activity-modal-close" id="activityModalClose" aria-label="Close">&times;</button>
-        <div id="activityModalContent"></div>
+        <div class="activity-modal-cli"><span class="cli-prompt">$</span> <span id="activityModalCliText"></span><span class="cursor-blink" id="activityModalCursor"></span></div>
+        <div id="activityModalContent" class="activity-modal-body"></div>
       </div>
     `;
     document.body.appendChild(modalOverlay);
     modalContent = modalOverlay.querySelector('#activityModalContent');
+    modalCliText = modalOverlay.querySelector('#activityModalCliText');
+    modalCursor = modalOverlay.querySelector('#activityModalCursor');
 
     modalOverlay.addEventListener('click', (e) => {
       if (e.target === modalOverlay) closeModal();
@@ -535,18 +600,76 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Splits an extra/body text block into separate messages on blank-line
+  // boundaries — matches how multiple `-m` commit messages are joined
+  // ("Title\n\nBody 1\n\nBody 2") and how most PR/issue/release markdown
+  // bodies are paragraph-separated.
+  function splitMessages(text) {
+    return text.split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
+  }
+
+  // Renders multiple messages as a proper CLI tree (same box-drawing
+  // convention as the `tree` command, npm ls, cargo tree, etc):
+  //   ├─ Message
+  //   ├─ Message 2
+  //   └─ Message 3
+  // Single-message extras skip this entirely and render as plain prose —
+  // the tree is only worth it when there's actually more than one item.
+  // Renders multiple messages as a connected tree, CSS-drawn rather than
+  // built from font glyphs — Unicode box-drawing characters (├─/└─) don't
+  // reliably touch edge-to-edge once there's any line-height between
+  // rows, so the "connection" is a real vertical line via ::before/::after
+  // instead, the same technique VS Code's file explorer and GitHub's file
+  // tree use. Single-message extras skip this and render as plain prose.
+  function buildTreeHtml(messages) {
+    const items = messages.map((msg) => `<div class="tree-item">${escapeHtml(msg)}</div>`);
+    return `<div class="activity-patch-tree">${items.join('')}</div>`;
+  }
+
+  function extraHtml(item) {
+    if (!item.extra) return '';
+    const label = item.extraLabel ? `<div class="activity-modal-extra-label">${escapeHtml(item.extraLabel)}</div>` : '';
+    const messages = splitMessages(item.extra);
+    const body = messages.length > 1 ? buildTreeHtml(messages) : `<p>${escapeHtml(item.extra)}</p>`;
+    return label + body;
+  }
+
   function openModal(item) {
     ensureModal();
-    modalContent.innerHTML = `
+    const command = deriveCliCommand(item);
+    const contentHtml = `
       ${item.photo ? `<img class="activity-modal-photo" src="${item.photo}" alt="">` : ''}
       <span class="activity-tag tag-${item.tagClass}">${item.tagLabel}</span>
       <h3 id="activityModalTitle">${escapeHtml(item.message)}</h3>
-      ${item.extra ? `${item.extraLabel ? `<div class="activity-modal-extra-label">${escapeHtml(item.extraLabel)}</div>` : ''}<p>${escapeHtml(item.extra)}</p>` : ''}
-      <div class="activity-meta">${escapeHtml(item.repo)} &middot; ${timeAgo(item.date)}</div>
+      ${extraHtml(item)}
+      <div class="activity-meta">${repoLine(item)} &middot; ${timeAgo(item.date)}${diffStatHtml(item) ? ` &middot; ${diffStatHtml(item)}` : ''}</div>
       ${item.url ? `<a class="activity-modal-link" href="${item.url}" target="_blank" rel="noopener">View on GitHub &#8599;</a>` : ''}
     `;
+
+    modalContent.innerHTML = contentHtml;
+    modalContent.classList.add('revealed');
+    modalCliText.textContent = '';
+    modalCursor.style.display = '';
     modalOverlay.classList.add('open');
     modalOverlay.querySelector('#activityModalClose').focus();
+
+    // Types the derived command at the "$" prompt purely as CLI flavor —
+    // content above is already visible immediately, this never gates it.
+    // modalTypingGen guards against garbled overlap if a second tile is
+    // clicked before the first command finishes typing.
+    const gen = ++modalTypingGen;
+    const speed = prefersReducedMotion ? 0 : 28;
+    let i = 0;
+    (function step() {
+      if (gen !== modalTypingGen) return;
+      if (i <= command.length) {
+        modalCliText.textContent = command.slice(0, i);
+        i++;
+        setTimeout(step, speed);
+      } else {
+        modalCursor.style.display = 'none';
+      }
+    })();
   }
 
   function closeModal() {
