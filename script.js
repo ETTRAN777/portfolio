@@ -375,7 +375,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // Merges pre-fetched GitHub activity (built server-side by
 // .github/workflows/update-activity.yml + scripts/fetch-activity.js and
 // written to activity-cache.json) with hand-written "editorial" entries
-// from activity-editorial.json, sorted newest-first, into #activityFeed.
+// from activity-editorial.json into a flex-wrap tile grid — tiles vary in
+// size by type/significance rather than a uniform CSS Grid, so it reads
+// as a deliberate bento-style layout, not a spreadsheet.
 //
 // No GitHub API calls happen in the browser — the cache file is a plain
 // static fetch, so there's no rate limit exposure for site visitors and
@@ -384,13 +386,16 @@ document.addEventListener('DOMContentLoaded', () => {
 // To change which repos feed the cache: edit REPOS in
 // scripts/fetch-activity.js (not this file).
 // To post an editorial update: add a new object to activity-editorial.json
-// — { "date": "YYYY-MM-DD", "title": "...", "body": "..." } — then
-// commit/push. No code changes needed for that.
+// — { "date": "YYYY-MM-DD", "title": "...", "body": "...", "image": "images/optional.jpg" }
+// — then commit/push. "image" is optional; omit it for a plain text note.
 document.addEventListener('DOMContentLoaded', () => {
   const feedEl = document.getElementById('activityFeed');
   if (!feedEl) return;
 
-  const MAX_ITEMS = 10;
+  const MAX_ITEMS = 30; // total items considered, across both sources — the
+  // grid shows everything up to this, no collapsing (compactness is the point).
+
+  let allItems = [];
 
   const escapeHtml = (str) =>
     String(str).replace(/[&<>"']/g, (c) => ({
@@ -410,6 +415,30 @@ document.addEventListener('DOMContentLoaded', () => {
     if (days < 30) return `${days}d ago`;
     return new Date(isoDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
   };
+
+  // Octicons (MIT licensed) — GitHub's own icon set, fitting since this
+  // content is GitHub-sourced data. git-commit/git-pull-request/tag/
+  // issue-opened for the four GitHub event types, pencil for editorial
+  // notes. Source: https://github.com/primer/octicons
+  const ICONS = {
+    push: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M11.93 8.5a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Zm-1.43-.75a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"></path></svg>',
+    pr: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h1A2.5 2.5 0 0 1 13.5 5v5.628a2.251 2.251 0 1 1-1.5 0V5a1 1 0 0 0-1-1h-1v1.646a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354ZM3.75 2.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm0 9.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm8.25.75a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Z"></path></svg>',
+    release: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 7.775V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 0 1 0 2.474l-5.026 5.026a1.75 1.75 0 0 1-2.474 0l-6.25-6.25A1.752 1.752 0 0 1 1 7.775Zm1.5 0c0 .066.026.13.073.177l6.25 6.25a.25.25 0 0 0 .354 0l5.025-5.025a.25.25 0 0 0 0-.354l-6.25-6.25a.25.25 0 0 0-.177-.073H2.75a.25.25 0 0 0-.25.25ZM6 5a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z"></path></svg>',
+    issue: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"></path></svg>',
+    note: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"></path></svg>',
+  };
+
+  // Tile size varies by type/significance, not uniformly — releases and
+  // photo notes are the "big" tiles, PRs/issues/plain notes are medium,
+  // routine pushes (the most frequent event) stay small. Combined with
+  // flex-wrap this gives an uneven bento-grid look while staying a real
+  // flex-based grid, not absolute-positioned masonry.
+  function tileSizeClass(item) {
+    if (item.tagClass === 'release') return 'size-lg';
+    if (item.source === 'editorial') return item.photo ? 'size-lg' : 'size-md';
+    if (item.tagClass === 'pr' || item.tagClass === 'issue') return 'size-md';
+    return 'size-sm';
+  }
 
   // activity-cache.json is written by the daily Action — see
   // scripts/fetch-activity.js for the shape: { generatedAt, events: [...] }
@@ -437,6 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
         repo: 'update',
         message: entry.title,
         extra: entry.body || null,
+        photo: entry.image || null,
         url: null,
         date: entry.date,
       }));
@@ -446,33 +476,107 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function tileHtml(item, idx) {
+    const sizeClass = tileSizeClass(item);
+    if (item.photo) {
+      return `
+        <button type="button" class="activity-tile ${sizeClass} has-photo tag-${item.tagClass}" style="background-image:url('${item.photo}')" data-idx="${idx}">
+          <div class="activity-tile-overlay">
+            <div class="activity-tile-title-row">
+              <span class="activity-tag tag-${item.tagClass}">${item.tagLabel}</span>
+              <span class="activity-tile-title">${escapeHtml(item.message)}</span>
+            </div>
+            <span class="activity-tile-repo">${escapeHtml(item.repo)}</span>
+          </div>
+        </button>
+      `;
+    }
+    return `
+      <button type="button" class="activity-tile ${sizeClass} tag-${item.tagClass}" data-idx="${idx}">
+        <div class="activity-tile-icon">${ICONS[item.tagClass] || ICONS.note}</div>
+        <div class="activity-tile-footer">
+          <div class="activity-tile-title-row">
+            <span class="activity-tag tag-${item.tagClass}">${item.tagLabel}</span>
+            <span class="activity-tile-title">${escapeHtml(item.message)}</span>
+          </div>
+          <span class="activity-tile-repo">${escapeHtml(item.repo)}</span>
+        </div>
+      </button>
+
+    `;
+  }
+
+  // ----- Modal -----
+  // Built once and reused — opened/populated per tile click rather than
+  // rebuilding the DOM node each time.
+  let modalOverlay = null;
+  let modalContent = null;
+
+  function ensureModal() {
+    if (modalOverlay) return;
+    modalOverlay = document.createElement('div');
+    modalOverlay.className = 'activity-modal-overlay';
+    modalOverlay.id = 'activityModalOverlay';
+    modalOverlay.innerHTML = `
+      <div class="activity-modal" role="dialog" aria-modal="true" aria-labelledby="activityModalTitle">
+        <button type="button" class="activity-modal-close" id="activityModalClose" aria-label="Close">&times;</button>
+        <div id="activityModalContent"></div>
+      </div>
+    `;
+    document.body.appendChild(modalOverlay);
+    modalContent = modalOverlay.querySelector('#activityModalContent');
+
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) closeModal();
+    });
+    modalOverlay.querySelector('#activityModalClose').addEventListener('click', closeModal);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modalOverlay.classList.contains('open')) closeModal();
+    });
+  }
+
+  function openModal(item) {
+    ensureModal();
+    modalContent.innerHTML = `
+      ${item.photo ? `<img class="activity-modal-photo" src="${item.photo}" alt="">` : ''}
+      <span class="activity-tag tag-${item.tagClass}">${item.tagLabel}</span>
+      <h3 id="activityModalTitle">${escapeHtml(item.message)}</h3>
+      ${item.extra ? `${item.extraLabel ? `<div class="activity-modal-extra-label">${escapeHtml(item.extraLabel)}</div>` : ''}<p>${escapeHtml(item.extra)}</p>` : ''}
+      <div class="activity-meta">${escapeHtml(item.repo)} &middot; ${timeAgo(item.date)}</div>
+      ${item.url ? `<a class="activity-modal-link" href="${item.url}" target="_blank" rel="noopener">View on GitHub &#8599;</a>` : ''}
+    `;
+    modalOverlay.classList.add('open');
+    modalOverlay.querySelector('#activityModalClose').focus();
+  }
+
+  function closeModal() {
+    if (modalOverlay) modalOverlay.classList.remove('open');
+  }
+
   // All message/repo/extra text arrives as raw plain text from both
   // sources above — escaping happens exactly once, here, at render time.
-  function renderActivity(items) {
-    if (!items.length) {
+  function renderActivity() {
+    if (!allItems.length) {
       feedEl.innerHTML = '<p class="activity-empty">No recent activity to show right now.</p>';
       return;
     }
 
-    feedEl.innerHTML = items.map((item) => `
-      <div class="activity-item">
-        <span class="activity-tag tag-${item.tagClass}">${item.tagLabel}</span>
-        <div class="activity-body">
-          <div class="activity-repo">${escapeHtml(item.repo)}</div>
-          <div class="activity-message">${escapeHtml(item.message)}${item.url ? ` <a href="${item.url}" target="_blank" rel="noopener">&#8599;</a>` : ''}</div>
-          ${item.extra ? `<div class="activity-message" style="opacity:0.85; margin-top:0.25rem;">${escapeHtml(item.extra)}</div>` : ''}
-          <div class="activity-meta">${timeAgo(item.date)}</div>
-        </div>
-      </div>
-    `).join('');
+    feedEl.innerHTML = allItems.map(tileHtml).join('');
+
+    feedEl.querySelectorAll('.activity-tile').forEach((tile) => {
+      tile.addEventListener('click', () => {
+        const idx = Number(tile.dataset.idx);
+        openModal(allItems[idx]);
+      });
+    });
   }
 
   Promise.all([fetchActivityCache(), fetchEditorialEntries()])
     .then(([githubEvents, editorialEntries]) => {
-      const merged = [...githubEvents, ...editorialEntries]
+      allItems = [...githubEvents, ...editorialEntries]
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, MAX_ITEMS);
-      renderActivity(merged);
+      renderActivity();
     })
     .catch((err) => {
       console.warn('Activity feed failed to load', err);

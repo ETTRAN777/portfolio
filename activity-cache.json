@@ -1,4 +1,115 @@
 {
-  "generatedAt": "2026-09-07T00:43:37.856Z",
-  "events": []
+  "generatedAt": "2020-01-01T00:00:00Z",
+  "events": [
+    {
+      "source": "github",
+      "repo": "portfolio",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "Pushed a commit: \"TEST DATA — fix nav bug on mobile Safari\"",
+      "extra": "Root cause was a stale event listener that never got cleaned up on unmount.\n\nAlso removed some now-unused CSS classes while I was in there.",
+      "extraLabel": "Patch notes",
+      "url": "https://github.com/ettran777/portfolio/commit/0000000",
+      "date": "2020-01-01T09:00:00Z"
+    },
+    {
+      "source": "github",
+      "repo": "aquariumTool",
+      "tagClass": "pr",
+      "tagLabel": "PR",
+      "message": "Merged PR #1: \"TEST DATA — add Story Mode transitions\"",
+      "extra": "This adds the full Story Mode feature end to end.\n\nIncludes tide-wipe SVG transitions, ambient bubble animation, and a nested Milestone Reel.",
+      "extraLabel": "Details",
+      "url": "https://github.com/ettran777/aquariumTool/pull/1",
+      "date": "2019-12-30T09:00:00Z"
+    },
+    {
+      "source": "github",
+      "repo": "aquariumTool",
+      "tagClass": "release",
+      "tagLabel": "RELEASE",
+      "message": "Published release TEST-v0.0.1",
+      "extra": "Initial test release.\n\n- Added multi-tank support\n- Added dependency-aware build checklist\n- Fixed a handful of sorting bugs",
+      "extraLabel": "Release notes",
+      "url": "https://github.com/ettran777/aquariumTool/releases/tag/TEST-v0.0.1",
+      "date": "2019-12-28T09:00:00Z"
+    },
+    {
+      "source": "github",
+      "repo": "SushiKing",
+      "tagClass": "issue",
+      "tagLabel": "ISSUE",
+      "message": "Opened issue #1: \"TEST DATA — cart quantity cap not enforced\"",
+      "extra": "Quantity selector allows values above the configured max cap on mobile Safari specifically — likely a debounce timing issue.",
+      "extraLabel": "Details",
+      "url": "https://github.com/ettran777/SushiKing/issues/1",
+      "date": "2019-12-25T09:00:00Z"
+    },
+    {
+      "source": "github",
+      "repo": "portfolio",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "Pushed 3 commits — latest: \"TEST DATA — quick typo fix\"",
+      "extra": null,
+      "extraLabel": null,
+      "url": "https://github.com/ettran777/portfolio/commit/0000001",
+      "date": "2019-12-20T09:00:00Z"
+    },
+    {
+      "source": "github",
+      "repo": "SushiKing",
+      "tagClass": "pr",
+      "tagLabel": "PR",
+      "message": "Opened PR #2: \"TEST DATA — dark mode toggle\"",
+      "extra": null,
+      "extraLabel": null,
+      "url": "https://github.com/ettran777/SushiKing/pull/2",
+      "date": "2019-12-15T09:00:00Z"
+    },
+    {
+      "source": "github",
+      "repo": "aquariumTool",
+      "tagClass": "issue",
+      "tagLabel": "ISSUE",
+      "message": "Closed issue #4: \"TEST DATA — sort comparator non-transitive\"",
+      "extra": "Fixed by rewriting the comparator to use a stable multi-key sort instead of chained ternaries.",
+      "extraLabel": "Details",
+      "url": "https://github.com/ettran777/aquariumTool/issues/4",
+      "date": "2019-12-10T09:00:00Z"
+    },
+    {
+      "source": "github",
+      "repo": "portfolio",
+      "tagClass": "release",
+      "tagLabel": "RELEASE",
+      "message": "Published release TEST-v0.0.2",
+      "extra": null,
+      "extraLabel": null,
+      "url": "https://github.com/ettran777/portfolio/releases/tag/TEST-v0.0.2",
+      "date": "2019-12-05T09:00:00Z"
+    },
+    {
+      "source": "github",
+      "repo": "SushiKing",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "Pushed a commit: \"TEST DATA — unify poke bowl builder logic\"",
+      "extra": "Consolidated two nearly-identical builder code paths into one shared component.\n\nNo behavior change for end users, this was a pure refactor.",
+      "extraLabel": "Patch notes",
+      "url": "https://github.com/ettran777/SushiKing/commit/0000002",
+      "date": "2019-12-01T09:00:00Z"
+    },
+    {
+      "source": "github",
+      "repo": "aquariumTool",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "Pushed 5 commits — latest: \"TEST DATA — widget iframe localStorage fix\"",
+      "extra": "Widget was reading localStorage via the page's global binding instead of the StorageAccessHandle, which broke inside the embedded iframe context.",
+      "extraLabel": "Patch notes",
+      "url": "https://github.com/ettran777/aquariumTool/commit/0000003",
+      "date": "2019-11-28T09:00:00Z"
+    }
+  ]
 }

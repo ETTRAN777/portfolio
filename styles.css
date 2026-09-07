@@ -1118,91 +1118,22 @@ footer {
 }
 
 /* ===== Activity Feed ===== */
-/* Feed merges live GitHub events (fetched in script.js) with hand-written
-   editorial entries from activity-editorial.json. Both render as the same
-   log-line shape; only the left-hand tag color/label differs by source. */
+/* A flex-wrap tile grid, not a uniform CSS Grid — tile size varies by
+   type/significance (see tileSizeClass in script.js), so rows fill
+   unevenly like a bento layout rather than a spreadsheet. Tag colors
+   (push/pr/release/issue/note) carry over from the previous list design,
+   just applied to tile icons/borders instead of a left-hand label. */
 
 .activity-feed {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.85rem;
 }
 
 .activity-status {
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: 0.95rem;
-}
-
-.activity-item {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1rem 1.25rem;
-  transition: border-color 0.18s ease;
-}
-
-.activity-item:hover {
-  border-color: var(--teal);
-}
-
-.activity-tag {
-  flex-shrink: 0;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0.15rem 0.5rem;
-  border-radius: 4px;
-  white-space: nowrap;
-  margin-top: 0.15rem;
-}
-
-/* GitHub event type colors */
-.activity-tag.tag-push { background: rgba(111, 191, 158, 0.15); color: var(--teal); }
-.activity-tag.tag-pr { background: rgba(139, 159, 232, 0.15); color: var(--periwinkle); }
-.activity-tag.tag-release { background: rgba(232, 147, 90, 0.15); color: var(--rust); }
-.activity-tag.tag-issue { background: rgba(242, 169, 59, 0.15); color: var(--amber); }
-/* Hand-written editorial entries get their own distinct tag */
-.activity-tag.tag-note { background: rgba(242, 169, 59, 0.2); color: var(--amber-dim); }
-
-.activity-body {
-  flex: 1;
-  min-width: 0;
-}
-
-.activity-repo {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-bottom: 0.15rem;
-}
-
-.activity-message {
-  color: var(--text);
-  font-size: 0.98rem;
-  line-height: 1.5;
-  word-break: break-word;
-}
-
-.activity-message a {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-color: var(--border);
-  text-underline-offset: 3px;
-}
-
-.activity-message a:hover {
-  text-decoration-color: var(--teal);
-}
-
-.activity-meta {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  margin-top: 0.35rem;
 }
 
 .activity-empty {
@@ -1212,9 +1143,224 @@ footer {
   font-style: italic;
 }
 
+.activity-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  width: fit-content;
+}
+
+.activity-tag.tag-push { background: rgba(111, 191, 158, 0.15); color: var(--teal); }
+.activity-tag.tag-pr { background: rgba(139, 159, 232, 0.15); color: var(--periwinkle); }
+.activity-tag.tag-release { background: rgba(232, 147, 90, 0.15); color: var(--rust); }
+.activity-tag.tag-issue { background: rgba(242, 169, 59, 0.15); color: var(--amber); }
+.activity-tag.tag-note { background: rgba(242, 169, 59, 0.2); color: var(--amber-dim); }
+
+.activity-tile {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  position: relative;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.activity-tile:hover,
+.activity-tile:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--teal);
+  outline: none;
+}
+
+/* Sizes are flex-basis, not fixed widths — flex-wrap lets rows settle
+   unevenly, which is the actual "flex grid" effect. */
+.activity-tile.size-sm { flex: 1 1 150px; min-height: 120px; }
+.activity-tile.size-md { flex: 1 1 230px; min-height: 170px; }
+.activity-tile.size-lg { flex: 1 1 320px; min-height: 230px; }
+
+.activity-tile-icon {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activity-tile-icon svg {
+  width: 44px;
+  height: 44px;
+}
+
+.activity-tile.tag-push .activity-tile-icon { color: var(--teal); }
+.activity-tile.tag-pr .activity-tile-icon { color: var(--periwinkle); }
+.activity-tile.tag-release .activity-tile-icon { color: var(--rust); }
+.activity-tile.tag-issue .activity-tile-icon { color: var(--amber); }
+.activity-tile.tag-note .activity-tile-icon { color: var(--amber-dim); }
+
+.activity-tile-footer {
+  padding: 0.55rem 0.75rem 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.activity-tile.has-photo {
+  justify-content: flex-end;
+}
+
+.activity-tile.has-photo .activity-tile-overlay {
+  padding: 0.6rem 0.75rem;
+  background: linear-gradient(to top, rgba(10, 12, 16, 0.85), rgba(10, 12, 16, 0));
+  color: #EDEFF4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.activity-tile-repo {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  opacity: 0.85;
+}
+
+.activity-tile-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.activity-tile-title {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activity-tile.has-photo .activity-tile-title {
+  color: #EDEFF4;
+}
+
+/* ----- Modal ----- */
+
+.activity-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 12, 16, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  padding: 1.5rem;
+}
+
+.activity-modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.activity-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.activity-modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.activity-modal-close:hover {
+  color: var(--text);
+}
+
+.activity-modal-photo {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  max-height: 260px;
+  object-fit: cover;
+  display: block;
+}
+
+.activity-modal h3 {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  margin: 0.6rem 0 0.75rem;
+  color: var(--text);
+}
+
+.activity-modal p {
+  color: var(--text);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.activity-modal-extra-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  margin-top: 0.85rem;
+}
+
+.activity-modal-extra-label + p {
+  margin-top: 0.3rem;
+}
+
+.activity-modal .activity-meta {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+}
+
+.activity-modal-link {
+  display: inline-block;
+  margin-top: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--teal);
+  text-decoration: underline;
+}
+
 @media (max-width: 600px) {
-  .activity-item {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+  .activity-tile.size-sm { flex-basis: 120px; min-height: 100px; }
+  .activity-tile.size-md { flex-basis: 160px; min-height: 130px; }
+  .activity-tile.size-lg { flex-basis: 100%; min-height: 180px; }
 }
