@@ -31,6 +31,7 @@
             <li><a onclick="handleMobileClick('hero')">Home</a></li>
             <li><a onclick="handleMobileClick('skills')">Skills and Resume</a></li>
             <li><a onclick="handleMobileClick('experience')">Experience</a></li>
+            <li><a onclick="handleMobileClick('activity')">Activity</a></li>
             <li><a onclick="handleMobileClick('projects')">Projects</a></li>
             <li><a onclick="handleMobileClick('education')">Education</a></li>
             <li><a onclick="handleMobileClick('contact')">Contact</a></li>
@@ -43,6 +44,7 @@
             <li><a onclick="scrollToSection('hero')">Home</a></li>
             <li><a onclick="scrollToSection('skills')">Skills and Resume</a></li>
             <li><a onclick="scrollToSection('experience')">Experience</a></li>
+            <li><a onclick="scrollToSection('activity')">Activity</a></li>
             <li><a onclick="scrollToSection('projects')">Projects</a></li>
             <li><a onclick="scrollToSection('education')">Education</a></li>
             <li><a onclick="scrollToSection('contact')">Contact</a></li>
@@ -185,6 +187,19 @@
                 </p>
             </div>
 
+        </div>
+    </section>
+
+    <section id="activity">
+        <div class="sectionHeader">
+            <div class="sectionBegin"></div>
+            <h2><span class="cmd-prefix">&gt; git log</span> <span class="cmd-flag">--recent</span></h2>
+            <div class="sectionEnd"></div>
+        </div>
+        <div class="section-content">
+            <div id="activityFeed" class="activity-feed">
+                <p class="activity-status">Loading recent activity&hellip;</p>
+            </div>
         </div>
     </section>
 

@@ -370,3 +370,112 @@ document.addEventListener('DOMContentLoaded', () => {
     sideScrollContainer.scrollLeft += e.deltaY;
   }, { passive: false });
 });
+
+// ===== Activity Feed =====
+// Merges pre-fetched GitHub activity (built server-side by
+// .github/workflows/update-activity.yml + scripts/fetch-activity.js and
+// written to activity-cache.json) with hand-written "editorial" entries
+// from activity-editorial.json, sorted newest-first, into #activityFeed.
+//
+// No GitHub API calls happen in the browser — the cache file is a plain
+// static fetch, so there's no rate limit exposure for site visitors and
+// no loading flicker waiting on a live API round-trip.
+//
+// To change which repos feed the cache: edit REPOS in
+// scripts/fetch-activity.js (not this file).
+// To post an editorial update: add a new object to activity-editorial.json
+// — { "date": "YYYY-MM-DD", "title": "...", "body": "..." } — then
+// commit/push. No code changes needed for that.
+document.addEventListener('DOMContentLoaded', () => {
+  const feedEl = document.getElementById('activityFeed');
+  if (!feedEl) return;
+
+  const MAX_ITEMS = 10;
+
+  const escapeHtml = (str) =>
+    String(str).replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    }[c]));
+
+  const timeAgo = (isoDate) => {
+    const then = new Date(isoDate).getTime();
+    if (Number.isNaN(then)) return '';
+    const diffMs = Date.now() - then;
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${days}d ago`;
+    return new Date(isoDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+  };
+
+  // activity-cache.json is written by the daily Action — see
+  // scripts/fetch-activity.js for the shape: { generatedAt, events: [...] }
+  async function fetchActivityCache() {
+    try {
+      const res = await fetch('activity-cache.json');
+      if (!res.ok) return [];
+      const data = await res.json();
+      return (data.events || []).map((event) => ({ ...event, source: 'github' }));
+    } catch (err) {
+      console.warn('Activity feed: could not load activity-cache.json', err);
+      return [];
+    }
+  }
+
+  async function fetchEditorialEntries() {
+    try {
+      const res = await fetch('activity-editorial.json');
+      if (!res.ok) return [];
+      const raw = await res.json();
+      return raw.map((entry) => ({
+        source: 'editorial',
+        tagClass: 'note',
+        tagLabel: 'NOTE',
+        repo: 'update',
+        message: entry.title,
+        extra: entry.body || null,
+        url: null,
+        date: entry.date,
+      }));
+    } catch (err) {
+      console.warn('Activity feed: could not load editorial entries', err);
+      return [];
+    }
+  }
+
+  // All message/repo/extra text arrives as raw plain text from both
+  // sources above — escaping happens exactly once, here, at render time.
+  function renderActivity(items) {
+    if (!items.length) {
+      feedEl.innerHTML = '<p class="activity-empty">No recent activity to show right now.</p>';
+      return;
+    }
+
+    feedEl.innerHTML = items.map((item) => `
+      <div class="activity-item">
+        <span class="activity-tag tag-${item.tagClass}">${item.tagLabel}</span>
+        <div class="activity-body">
+          <div class="activity-repo">${escapeHtml(item.repo)}</div>
+          <div class="activity-message">${escapeHtml(item.message)}${item.url ? ` <a href="${item.url}" target="_blank" rel="noopener">&#8599;</a>` : ''}</div>
+          ${item.extra ? `<div class="activity-message" style="opacity:0.85; margin-top:0.25rem;">${escapeHtml(item.extra)}</div>` : ''}
+          <div class="activity-meta">${timeAgo(item.date)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  Promise.all([fetchActivityCache(), fetchEditorialEntries()])
+    .then(([githubEvents, editorialEntries]) => {
+      const merged = [...githubEvents, ...editorialEntries]
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, MAX_ITEMS);
+      renderActivity(merged);
+    })
+    .catch((err) => {
+      console.warn('Activity feed failed to load', err);
+      feedEl.innerHTML = '<p class="activity-empty">Activity feed is unavailable right now.</p>';
+    });
+});

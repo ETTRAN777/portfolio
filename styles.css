@@ -1116,3 +1116,105 @@ footer {
     pointer-events: auto;
   }
 }
+
+/* ===== Activity Feed ===== */
+/* Feed merges live GitHub events (fetched in script.js) with hand-written
+   editorial entries from activity-editorial.json. Both render as the same
+   log-line shape; only the left-hand tag color/label differs by source. */
+
+.activity-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.activity-status {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+}
+
+.activity-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  transition: border-color 0.18s ease;
+}
+
+.activity-item:hover {
+  border-color: var(--teal);
+}
+
+.activity-tag {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin-top: 0.15rem;
+}
+
+/* GitHub event type colors */
+.activity-tag.tag-push { background: rgba(111, 191, 158, 0.15); color: var(--teal); }
+.activity-tag.tag-pr { background: rgba(139, 159, 232, 0.15); color: var(--periwinkle); }
+.activity-tag.tag-release { background: rgba(232, 147, 90, 0.15); color: var(--rust); }
+.activity-tag.tag-issue { background: rgba(242, 169, 59, 0.15); color: var(--amber); }
+/* Hand-written editorial entries get their own distinct tag */
+.activity-tag.tag-note { background: rgba(242, 169, 59, 0.2); color: var(--amber-dim); }
+
+.activity-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-repo {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.15rem;
+}
+
+.activity-message {
+  color: var(--text);
+  font-size: 0.98rem;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.activity-message a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 3px;
+}
+
+.activity-message a:hover {
+  text-decoration-color: var(--teal);
+}
+
+.activity-meta {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+}
+
+.activity-empty {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .activity-item {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
