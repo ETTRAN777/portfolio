@@ -1,6 +1,34 @@
 {
-  "generatedAt": "2026-09-08T17:05:00.315Z",
+  "generatedAt": "2026-09-09T17:02:34.477Z",
   "events": [
+    {
+      "source": "github",
+      "repo": "portfolio",
+      "date": "2026-09-08T17:05:01Z",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "chore: update activity feed cache",
+      "commitCount": 1,
+      "additions": 141,
+      "deletions": 12,
+      "extra": null,
+      "extraLabel": null,
+      "url": "https://github.com/ETTRAN777/portfolio/commit/a92bfcc25c80e05e1c10f32acb1350173176993b"
+    },
+    {
+      "source": "github",
+      "repo": "aquariumTool",
+      "date": "2026-09-08T02:35:01Z",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "Updates",
+      "commitCount": 1,
+      "additions": 18,
+      "deletions": 0,
+      "extra": null,
+      "extraLabel": null,
+      "url": "https://github.com/ETTRAN777/aquariumTool/commit/76a75e69f3dfc21d1577b22a49995364d1c63882"
+    },
     {
       "source": "github",
       "repo": "aquariumTool",
@@ -28,6 +56,34 @@
       "extra": null,
       "extraLabel": null,
       "url": "https://github.com/ETTRAN777/aquariumTool/commit/d37caad1c759a508058a2b2dd2f288eb14bd4e8e"
+    },
+    {
+      "source": "github",
+      "repo": "aquariumTool",
+      "date": "2026-09-08T02:22:05Z",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "Redirect works",
+      "commitCount": 1,
+      "additions": 15,
+      "deletions": 2,
+      "extra": "Added hashchange listener to account for GoatCounter URL limitation",
+      "extraLabel": "Patch notes",
+      "url": "https://github.com/ETTRAN777/aquariumTool/commit/e43f9d8876105e043e62d288d25f3074072e1205"
+    },
+    {
+      "source": "github",
+      "repo": "aquariumTool",
+      "date": "2026-09-08T02:16:56Z",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "Updates",
+      "commitCount": 1,
+      "additions": 42,
+      "deletions": 7,
+      "extra": null,
+      "extraLabel": null,
+      "url": "https://github.com/ETTRAN777/aquariumTool/commit/c814749eaa516ad4e8086a540c9fe768989110c7"
     },
     {
       "source": "github",
@@ -644,50 +700,6 @@
       "extraLabel": "Patch notes",
       "url": "https://github.com/ettran777/SushiKing/commit/0000005",
       "date": "2019-12-22T09:00:00Z"
-    },
-    {
-      "source": "github",
-      "repo": "aquariumTool",
-      "tagClass": "pr",
-      "tagLabel": "PR",
-      "message": "Merged PR #1: \"TEST DATA — add Story Mode transitions\"",
-      "extra": "This adds the full Story Mode feature end to end.\n\nIncludes tide-wipe SVG transitions, ambient bubble animation, and a nested Milestone Reel.",
-      "extraLabel": "Details",
-      "url": "https://github.com/ettran777/aquariumTool/pull/1",
-      "date": "2019-12-20T09:00:00Z"
-    },
-    {
-      "source": "github",
-      "repo": "aquariumTool",
-      "tagClass": "release",
-      "tagLabel": "RELEASE",
-      "message": "Published release TEST-v0.0.1",
-      "extra": "Initial test release.\n\n- Added multi-tank support\n- Added dependency-aware build checklist\n- Fixed a handful of sorting bugs",
-      "extraLabel": "Release notes",
-      "url": "https://github.com/ettran777/aquariumTool/releases/tag/TEST-v0.0.1",
-      "date": "2019-12-18T09:00:00Z"
-    },
-    {
-      "source": "github",
-      "repo": "SushiKing",
-      "tagClass": "issue",
-      "tagLabel": "ISSUE",
-      "message": "Opened issue #1: \"TEST DATA — cart quantity cap not enforced\"",
-      "extra": "Quantity selector allows values above the configured max cap on mobile Safari specifically — likely a debounce timing issue.",
-      "extraLabel": "Details",
-      "url": "https://github.com/ettran777/SushiKing/issues/1",
-      "date": "2019-12-15T09:00:00Z"
-    },
-    {
-      "source": "github",
-      "repo": "portfolio",
-      "tagClass": "pr",
-      "tagLabel": "PR",
-      "message": "Opened PR #2: \"TEST DATA — dark mode toggle\"",
-      "extra": null,
-      "extraLabel": null,
-      "url": "https://github.com/ettran777/portfolio/pull/2",
-      "date": "2019-12-10T09:00:00Z"
     }
   ]
 }
