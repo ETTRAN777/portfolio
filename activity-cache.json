@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T00:24:45.411Z",
+  "generatedAt": "2026-09-10T00:40:20.991Z",
   "events": [
     {
       "source": "github",
@@ -340,6 +340,20 @@
     {
       "source": "github",
       "repo": "aquariumTool",
+      "date": "2026-08-31T00:47:01Z",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "Added Tidemark link in Widget",
+      "commitCount": 1,
+      "additions": 138,
+      "deletions": 128,
+      "extra": null,
+      "extraLabel": null,
+      "url": "https://github.com/ETTRAN777/aquariumTool/commit/8584960aca63472dee99905525b138a27a2ae195"
+    },
+    {
+      "source": "github",
+      "repo": "aquariumTool",
       "date": "2026-08-30T22:38:54Z",
       "tagClass": "push",
       "tagLabel": "PUSH",
@@ -350,6 +364,20 @@
       "extra": null,
       "extraLabel": null,
       "url": "https://github.com/ETTRAN777/aquariumTool/commit/b4514b1845f1d3f47c758c24a6b279afc70d62ba"
+    },
+    {
+      "source": "github",
+      "repo": "aquariumTool",
+      "date": "2026-08-30T22:38:39Z",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "Widget fixed, added height padding to remove scrollbars in widget",
+      "commitCount": 1,
+      "additions": 2,
+      "deletions": 1,
+      "extra": null,
+      "extraLabel": null,
+      "url": "https://github.com/ETTRAN777/aquariumTool/commit/626a5c4d854ee2492656d36fec607dabc4785130"
     },
     {
       "source": "github",
@@ -406,6 +434,20 @@
       "extra": null,
       "extraLabel": null,
       "url": "https://github.com/ETTRAN777/aquariumTool/commit/00407f5e07d2d5d48f6338433839f188db04a392"
+    },
+    {
+      "source": "github",
+      "repo": "aquariumTool",
+      "date": "2026-08-29T05:11:50Z",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "Tidemark Widget",
+      "commitCount": 1,
+      "additions": 424,
+      "deletions": 52,
+      "extra": "A quick glanceable widget embed, perfect for personal pages viewed daily, like to-do lists or personal dashboards.",
+      "extraLabel": "Patch notes",
+      "url": "https://github.com/ETTRAN777/aquariumTool/commit/8bbf3a5eb064ba8793fe0d355655786677da7ac0"
     },
     {
       "source": "github",
