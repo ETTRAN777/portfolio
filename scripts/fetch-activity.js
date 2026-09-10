@@ -37,6 +37,15 @@ const MAX_EVENTS_PER_REPO = 15; // how many of each repo's most recent events to
 const MAX_TOTAL_EVENTS = 50; // retention cap across all repos combined, after merging with history
 const TOKEN = process.env.GITHUB_TOKEN;
 
+// Pushes to these branches are excluded from the feed — currently just
+// gh-pages, since that's populated by automated deploy tooling (e.g. the
+// `gh-pages` npm package) with generic commit messages like "Updates",
+// not real development work. This is a BLOCKLIST, not an allowlist —
+// pushes to main, feature branches, etc. all still come through normally.
+// Add more branch names here if another auto-generated branch shows up
+// (e.g. a "dist" or "build" branch from some other deploy tool).
+const EXCLUDED_BRANCHES = ['gh-pages'];
+
 function repoShortName(fullName) {
   return fullName.split('/')[1] || fullName;
 }
@@ -88,8 +97,10 @@ async function normalizeEvent(event) {
 
   switch (event.type) {
     case 'PushEvent': {
-      const { head, before } = event.payload;
+      const { head, before, ref } = event.payload;
       if (!head || !before) return null;
+      const branch = (ref || '').replace(/^refs\/heads\//, '');
+      if (EXCLUDED_BRANCHES.includes(branch)) return null;
       let compareData;
       try {
         const res = await fetch(`https://api.github.com/repos/${event.repo.name}/compare/${before}...${head}`, {
