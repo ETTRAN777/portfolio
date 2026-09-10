@@ -25,6 +25,13 @@ const path = require('path');
 // section. No other code needs to change.
 const REPOS = ['ettran777/portfolio', 'ettran777/aquariumTool', 'ettran777/SushiKing'];
 
+// Only events authored by this GitHub user are surfaced — this is what
+// keeps github-actions[bot]'s own "chore: update activity feed cache"
+// commits (made every time this very script runs and pushes the cache
+// file back) out of the feed. Case-insensitive compare against
+// event.actor.login, which the events API always includes.
+const ALLOWED_AUTHOR = 'ettran777';
+
 const CACHE_PATH = path.join(__dirname, '..', 'activity-cache.json');
 const MAX_EVENTS_PER_REPO = 15; // how many of each repo's most recent events to pull per run
 const MAX_TOTAL_EVENTS = 50; // retention cap across all repos combined, after merging with history
@@ -32,6 +39,14 @@ const TOKEN = process.env.GITHUB_TOKEN;
 
 function repoShortName(fullName) {
   return fullName.split('/')[1] || fullName;
+}
+
+// Belt-and-suspenders on top of the author check above: also drop
+// anything whose message starts with "chore" (case-insensitive), in case
+// the bot ever runs under a differently-named actor, or if a real "chore:
+// dependency bump" commit shows up that's not worth surfacing either.
+function isChoreMessage(text) {
+  return /^chore\b/i.test((text || '').trim());
 }
 
 const MAX_EXTRA_LENGTH = 600; // caps how much of a long PR/release/issue body gets stored
@@ -91,6 +106,7 @@ async function normalizeEvent(event) {
       const latest = commits[commits.length - 1];
       const lines = (latest.commit.message || '').split('\n');
       const firstLine = lines[0];
+      if (isChoreMessage(firstLine)) return null;
       // `git commit -m "Title" -m "body 1" -m "body 2"` joins subsequent
       // -m messages as separate paragraphs after the first line — that's
       // exactly what we want to surface as patch notes.
@@ -176,7 +192,11 @@ async function fetchRepoEvents(repo) {
   });
   if (!res.ok) throw new Error(`${repo}: ${res.status} ${res.statusText}`);
   const raw = await res.json();
-  const normalized = await Promise.all(raw.map((event) => normalizeEvent(event)));
+  // Filter by author BEFORE normalizing — this is what actually saves
+  // the extra compare-API call for bot pushes (normalizeEvent is where
+  // that call happens), not just a cosmetic filter after the fact.
+  const authored = raw.filter((event) => (event.actor?.login || '').toLowerCase() === ALLOWED_AUTHOR);
+  const normalized = await Promise.all(authored.map((event) => normalizeEvent(event)));
   return normalized.filter(Boolean).slice(0, MAX_EVENTS_PER_REPO);
 }
 
@@ -198,6 +218,17 @@ function eventKey(event) {
 
 async function main() {
   const existing = loadExistingCache();
+  // Purge any bot/chore entries already sitting in the cache from before
+  // this filtering existed — this makes the fix retroactive without
+  // needing to manually reset activity-cache.json. The cache doesn't
+  // retain the original actor login (only message/repo/etc survive into
+  // the stored shape), so this can only match on the message text, but
+  // that's exactly what the bot's commit looks like every time.
+  const existingClean = (existing.events || []).filter((event) => !isChoreMessage(event.message));
+  const purgedCount = (existing.events || []).length - existingClean.length;
+  if (purgedCount > 0) {
+    console.log(`Purged ${purgedCount} previously-cached chore/bot entries`);
+  }
 
   const allEvents = [];
   for (const repo of REPOS) {
@@ -222,7 +253,7 @@ async function main() {
   // the feed should reflect that truthfully rather than artificially
   // holding slots open for quieter repos.
   const merged = new Map();
-  for (const event of [...(existing.events || []), ...allEvents]) {
+  for (const event of [...existingClean, ...allEvents]) {
     merged.set(eventKey(event), event);
   }
 

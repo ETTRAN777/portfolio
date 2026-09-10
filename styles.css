@@ -1143,6 +1143,28 @@ footer {
   font-style: italic;
 }
 
+.activity-toggle {
+  display: block;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--teal);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+}
+
+.activity-toggle:hover {
+  border-color: var(--teal);
+  color: var(--text);
+}
+
+.activity-grid-toggle {
+  margin-top: 1rem;
+}
+
 .activity-tag {
   display: inline-block;
   font-family: var(--font-mono);
@@ -1234,6 +1256,11 @@ footer {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   opacity: 0.85;
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .activity-tile-meta-row {

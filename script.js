@@ -461,6 +461,18 @@ document.addEventListener('DOMContentLoaded', () => {
     return repo;
   }
 
+  // Plain-text length of repoLine()'s output, without building the HTML —
+  // used only for the width estimate below, kept in sync with repoLine()
+  // by hand since duplicating the tiny branch is simpler than parsing
+  // HTML entities back out of the rendered string.
+  function repoLineLength(item) {
+    let text = item.repo || '';
+    if (item.tagClass === 'push' && item.commitCount > 1) {
+      text += ` · ${item.commitCount} commits`;
+    }
+    return text.length;
+  }
+
   // Diffstat for a push, e.g. "+120" or "+120 -8" — deletions are only
   // shown when there actually are any; a push with zero deletions just
   // shows the insertions alone rather than a redundant "-0".
@@ -470,6 +482,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const parts = [`<span class="diff-add">+${item.additions}</span>`];
     if (item.deletions > 0) parts.push(`<span class="diff-del">-${item.deletions}</span>`);
     return parts.join(' ');
+  }
+
+  // Plain-text length variant of diffStatHtml(), same reasoning as
+  // repoLineLength() above.
+  function diffStatLength(item) {
+    if (item.tagClass !== 'push' || item.additions == null || item.deletions == null) return 0;
+    if (item.additions === 0 && item.deletions === 0) return 0;
+    let text = `+${item.additions}`;
+    if (item.deletions > 0) text += ` -${item.deletions}`;
+    return text.length;
+  }
+
+  // Tile width is content-driven rather than locked to one of 3 fixed
+  // pixel values, but ONLY based on the meta line (repo · N commits
+  // +NNN -NN) — that's the thing that was actually wrapping/squishing.
+  // Title text is deliberately excluded here: it already truncates
+  // cleanly with CSS ellipsis by design, so sizing tiles to fit a full
+  // long title would balloon the whole grid for no real benefit. The 3
+  // size tiers still set the BASELINE (and control height via CSS), this
+  // just raises the width floor when the meta line genuinely needs more
+  // room than that; it never shrinks a tile below its tier's normal width.
+  const BASE_TILE_WIDTH = { 'size-sm': 150, 'size-md': 230, 'size-lg': 320 };
+  const MAX_TILE_WIDTH = 340;
+  const PX_PER_CHAR = 6.5; // rough average for our font sizes — good enough for layout sizing, not pixel-perfect
+  const TILE_CONTENT_PADDING = 36; // tile's own horizontal padding + the meta-row's flex gap
+
+  function estimateTileWidth(item, sizeClass) {
+    const metaLen = repoLineLength(item) + diffStatLength(item);
+    const contentDriven = metaLen * PX_PER_CHAR + TILE_CONTENT_PADDING;
+    const base = BASE_TILE_WIDTH[sizeClass] || BASE_TILE_WIDTH['size-sm'];
+    return Math.min(MAX_TILE_WIDTH, Math.max(base, contentDriven));
   }
 
   // activity-cache.json is written by the daily Action — see
@@ -511,9 +554,15 @@ document.addEventListener('DOMContentLoaded', () => {
   function tileHtml(item, idx) {
     const sizeClass = tileSizeClass(item);
     const diffStat = diffStatHtml(item);
+    const width = estimateTileWidth(item, sizeClass);
+    // min-width only, not flex-basis — flex-basis stays under CSS control
+    // so the mobile media query (which forces size-lg to 100% width on
+    // narrow screens) still works. This just raises the floor so a tile
+    // never shrinks below what its own content needs.
+    const widthStyle = `min-width:${width}px;`;
     if (item.photo) {
       return `
-        <button type="button" class="activity-tile ${sizeClass} has-photo tag-${item.tagClass}" style="background-image:url('${item.photo}')" data-idx="${idx}">
+        <button type="button" class="activity-tile ${sizeClass} has-photo tag-${item.tagClass}" style="background-image:url('${item.photo}'); ${widthStyle}" data-idx="${idx}">
           <div class="activity-tile-overlay">
             <div class="activity-tile-title-row">
               <span class="activity-tag tag-${item.tagClass}">${item.tagLabel}</span>
@@ -528,7 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
     return `
-      <button type="button" class="activity-tile ${sizeClass} tag-${item.tagClass}" data-idx="${idx}">
+      <button type="button" class="activity-tile ${sizeClass} tag-${item.tagClass}" style="${widthStyle}" data-idx="${idx}">
         <div class="activity-tile-icon">${ICONS[item.tagClass] || ICONS.note}</div>
         <div class="activity-tile-footer">
           <div class="activity-tile-title-row">
@@ -678,6 +727,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // All message/repo/extra text arrives as raw plain text from both
   // sources above — escaping happens exactly once, here, at render time.
+  // Groups already-rendered tiles into visual rows by comparing offsetTop
+  // (flex-wrap items sharing a row share the same top edge, regardless of
+  // their individual height/size class), then returns the index where
+  // row number maxRows+1 begins — i.e. everything from that index on
+  // belongs to a row beyond the limit and should be hidden by default.
+  // Returns tiles.length if the whole grid already fits within maxRows.
+  function computeRowCutoffIndex(tiles, maxRows) {
+    let rowCount = 0;
+    let lastTop = null;
+    for (let i = 0; i < tiles.length; i++) {
+      const top = tiles[i].offsetTop;
+      if (top !== lastTop) {
+        rowCount++;
+        lastTop = top;
+        if (rowCount > maxRows) return i;
+      }
+    }
+    return tiles.length;
+  }
+
   function renderActivity() {
     if (!allItems.length) {
       feedEl.innerHTML = '<p class="activity-empty">No recent activity to show right now.</p>';
@@ -686,12 +755,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     feedEl.innerHTML = allItems.map(tileHtml).join('');
 
-    feedEl.querySelectorAll('.activity-tile').forEach((tile) => {
+    const tiles = [...feedEl.querySelectorAll('.activity-tile')];
+    tiles.forEach((tile) => {
       tile.addEventListener('click', () => {
         const idx = Number(tile.dataset.idx);
         openModal(allItems[idx]);
       });
     });
+
+    const existingToggle = feedEl.parentNode.querySelector('.activity-grid-toggle');
+    if (existingToggle) existingToggle.remove();
+
+    // Row measurement only happens once, right after initial layout — it
+    // doesn't re-run on window resize, same pragmatic scope as the
+    // previous list-based show-more feature had.
+    const MAX_ROWS = 4;
+    const cutoff = computeRowCutoffIndex(tiles, MAX_ROWS);
+    if (cutoff >= tiles.length) return; // already fits within 4 rows, no toggle needed
+
+    tiles.slice(cutoff).forEach((tile) => { tile.style.display = 'none'; });
+
+    const hiddenCount = tiles.length - cutoff;
+    const toggleBtn = document.createElement('button');
+    toggleBtn.type = 'button';
+    toggleBtn.className = 'activity-toggle activity-grid-toggle';
+    toggleBtn.textContent = `Show ${hiddenCount} more`;
+    let expanded = false;
+    toggleBtn.addEventListener('click', () => {
+      expanded = !expanded;
+      tiles.slice(cutoff).forEach((tile) => { tile.style.display = expanded ? '' : 'none'; });
+      toggleBtn.textContent = expanded ? 'Show less' : `Show ${hiddenCount} more`;
+      if (!expanded) feedEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+    feedEl.insertAdjacentElement('afterend', toggleBtn);
   }
 
   Promise.all([fetchActivityCache(), fetchEditorialEntries()])
