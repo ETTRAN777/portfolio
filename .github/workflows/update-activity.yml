@@ -9,7 +9,7 @@ on:
   workflow_dispatch: {} # lets you trigger a manual refresh from the Actions tab
 
 permissions:
-  contents: write # needed to commit the updated cache file back to the repo
+  contents: write # needed to commit the updated cache file to the activity-data branch
 
 jobs:
   update-activity:
@@ -21,15 +21,45 @@ jobs:
         with:
           node-version: '20'
 
+      # Pull in whatever cache already exists on activity-data (if that
+      # branch exists yet) BEFORE running the fetch script — this is what
+      # the script's own merge/accumulation logic reads as "existing"
+      # history. First-ever run just has no file, and the script already
+      # handles that (loadExistingCache falls back to an empty array).
+      - name: Load existing cache from activity-data branch
+        run: |
+          git fetch origin activity-data 2>/dev/null || true
+          if git show-ref --verify --quiet refs/remotes/origin/activity-data; then
+            git show origin/activity-data:activity-cache.json > activity-cache.json
+          fi
+
       - name: Fetch GitHub activity
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/fetch-activity.js
 
-      - name: Commit updated cache
+      # Commits ONLY to activity-data, never to main — this is the actual
+      # fix: previously the bot committed straight to main on its own
+      # schedule, which meant forgetting to `git pull` before starting a
+      # local session could collide with a bot commit and produce a merge
+      # commit that buried your real commit message. Since the bot never
+      # touches main now, there's nothing to collide with, regardless of
+      # when you last pulled.
+      - name: Publish cache to activity-data branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          cp activity-cache.json /tmp/activity-cache.json
+
+          if git show-ref --verify --quiet refs/remotes/origin/activity-data; then
+            git checkout activity-data
+          else
+            git checkout --orphan activity-data
+            git rm -rf . > /dev/null 2>&1 || true
+          fi
+
+          cp /tmp/activity-cache.json activity-cache.json
           git add activity-cache.json
           git diff --cached --quiet || git commit -m "chore: update activity feed cache"
-          git push
+          git push origin activity-data

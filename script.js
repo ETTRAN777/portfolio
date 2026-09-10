@@ -494,15 +494,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return text.length;
   }
 
-  // Tile width is content-driven rather than locked to one of 3 fixed
-  // pixel values, but ONLY based on the meta line (repo · N commits
-  // +NNN -NN) — that's the thing that was actually wrapping/squishing.
-  // Title text is deliberately excluded here: it already truncates
-  // cleanly with CSS ellipsis by design, so sizing tiles to fit a full
-  // long title would balloon the whole grid for no real benefit. The 3
-  // size tiers still set the BASELINE (and control height via CSS), this
-  // just raises the width floor when the meta line genuinely needs more
-  // room than that; it never shrinks a tile below its tier's normal width.
+  // Tile width is content-driven, based ONLY on the meta line (repo · N
+  // commits +NNN -NN) — title text is excluded since it already truncates
+  // cleanly with CSS ellipsis by design. The 3 size tiers set the
+  // baseline (and control height via CSS); this raises the width floor
+  // when the meta line genuinely needs more room than that.
   const BASE_TILE_WIDTH = { 'size-sm': 150, 'size-md': 230, 'size-lg': 320 };
   const MAX_TILE_WIDTH = 340;
   const PX_PER_CHAR = 6.5; // rough average for our font sizes — good enough for layout sizing, not pixel-perfect
@@ -515,11 +511,20 @@ document.addEventListener('DOMContentLoaded', () => {
     return Math.min(MAX_TILE_WIDTH, Math.max(base, contentDriven));
   }
 
-  // activity-cache.json is written by the daily Action — see
-  // scripts/fetch-activity.js for the shape: { generatedAt, events: [...] }
+  // activity-cache.json is written by the daily Action to a SEPARATE
+  // branch (activity-data), not main — see scripts/fetch-activity.js and
+  // .github/workflows/update-activity.yml. This is deliberate: if the bot
+  // committed straight to main, forgetting to `git pull` before starting
+  // a local session could collide with a bot commit and produce a merge
+  // commit burying your real commit message. Fetching from a raw.
+  // githubusercontent.com URL on a dedicated branch means the bot never
+  // touches main at all, so there's nothing to collide with.
+  // Shape: { generatedAt, events: [...] }
+  const ACTIVITY_CACHE_URL = 'https://raw.githubusercontent.com/ETTRAN777/portfolio/activity-data/activity-cache.json';
+
   async function fetchActivityCache() {
     try {
-      const res = await fetch('activity-cache.json');
+      const res = await fetch(ACTIVITY_CACHE_URL);
       if (!res.ok) return [];
       const data = await res.json();
       return (data.events || []).map((event) => ({ ...event, source: 'github' }));
