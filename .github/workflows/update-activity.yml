@@ -51,6 +51,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           cp activity-cache.json /tmp/activity-cache.json
+          rm -f activity-cache.json
 
           if git show-ref --verify --quiet refs/remotes/origin/activity-data; then
             git checkout activity-data
