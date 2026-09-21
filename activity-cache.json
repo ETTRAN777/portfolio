@@ -1,6 +1,20 @@
 {
-  "generatedAt": "2026-09-20T16:41:35.564Z",
+  "generatedAt": "2026-09-21T18:29:31.134Z",
   "events": [
+    {
+      "source": "github",
+      "repo": "aquariumTool",
+      "date": "2026-09-21T03:23:35Z",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "fix: made boolean fields uniform sitewide",
+      "commitCount": 1,
+      "additions": 54,
+      "deletions": 11,
+      "extra": null,
+      "extraLabel": null,
+      "url": "https://github.com/ETTRAN777/aquariumTool/commit/4c3bf3c23181692aa6b0f0041e2390f370e76e8d"
+    },
     {
       "source": "github",
       "repo": "portfolio",
