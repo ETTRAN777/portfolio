@@ -555,7 +555,7 @@ section h2 {
 
 .course-footer img {
   width: 40px;
-  height: fit-content;
+  height: auto;
   filter: grayscale(0.3) brightness(0.9);
 }
 
