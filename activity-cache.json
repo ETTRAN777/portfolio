@@ -1,6 +1,20 @@
 {
-  "generatedAt": "2026-10-17T16:09:03.331Z",
+  "generatedAt": "2026-10-18T16:22:02.564Z",
   "events": [
+    {
+      "source": "github",
+      "repo": "aquariumTool",
+      "date": "2026-10-18T00:43:23Z",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "feat: Photos now offload to IndexedDB when localStorage becomes too full",
+      "commitCount": 1,
+      "additions": 969,
+      "deletions": 141,
+      "extra": null,
+      "extraLabel": null,
+      "url": "https://github.com/ETTRAN777/aquariumTool/commit/611a47455ef829cb0dd6161e5b7ee0df7bf2c8f0"
+    },
     {
       "source": "github",
       "repo": "aquariumTool",
