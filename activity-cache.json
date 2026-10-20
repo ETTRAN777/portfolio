@@ -1,6 +1,20 @@
 {
-  "generatedAt": "2026-10-19T19:02:31.038Z",
+  "generatedAt": "2026-10-20T17:47:22.014Z",
   "events": [
+    {
+      "source": "github",
+      "repo": "aquariumTool",
+      "date": "2026-10-19T22:48:34Z",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "hotfix feat: Log Update - Logs can now be backdated to support entries going in after the date they happened",
+      "commitCount": 1,
+      "additions": 224,
+      "deletions": 8,
+      "extra": "feat: Roster status is now derived from log statuses, can always be overridden in Roster",
+      "extraLabel": "Patch notes",
+      "url": "https://github.com/ETTRAN777/aquariumTool/commit/dd64a980b29388309083b0f6e6408791b35114aa"
+    },
     {
       "source": "github",
       "repo": "aquariumTool",
