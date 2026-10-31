@@ -1,6 +1,20 @@
 {
-  "generatedAt": "2026-10-30T18:25:13.905Z",
+  "generatedAt": "2026-10-31T17:31:12.203Z",
   "events": [
+    {
+      "source": "github",
+      "repo": "aquariumTool",
+      "date": "2026-10-29T22:13:29Z",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "IndexedDB and LocalStorage Usage Meter",
+      "commitCount": 1,
+      "additions": 755,
+      "deletions": 30,
+      "extra": "feat: Added localStorage and IndexedDB usage visualization\n\nFixed localStorage memory leak that compounded photo storage each import",
+      "extraLabel": "Patch notes",
+      "url": "https://github.com/ETTRAN777/aquariumTool/commit/e7df1c11789820ecf7711a0a9f8ac8d2e89d3a79"
+    },
     {
       "source": "github",
       "repo": "aquariumTool",
