@@ -31,8 +31,8 @@
             <li><a onclick="handleMobileClick('hero')">Home</a></li>
             <li><a onclick="handleMobileClick('skills')">Skills and Resume</a></li>
             <li><a onclick="handleMobileClick('experience')">Experience</a></li>
-            <li><a onclick="handleMobileClick('activity')">Activity</a></li>
             <li><a onclick="handleMobileClick('projects')">Projects</a></li>
+            <li><a onclick="handleMobileClick('activity')">Activity</a></li>
             <li><a onclick="handleMobileClick('education')">Education</a></li>
             <li><a onclick="handleMobileClick('contact')">Contact</a></li>
         </ul>
@@ -44,8 +44,8 @@
             <li><a onclick="scrollToSection('hero')">Home</a></li>
             <li><a onclick="scrollToSection('skills')">Skills and Resume</a></li>
             <li><a onclick="scrollToSection('experience')">Experience</a></li>
-            <li><a onclick="scrollToSection('activity')">Activity</a></li>
             <li><a onclick="scrollToSection('projects')">Projects</a></li>
+            <li><a onclick="scrollToSection('activity')">Activity</a></li>
             <li><a onclick="scrollToSection('education')">Education</a></li>
             <li><a onclick="scrollToSection('contact')">Contact</a></li>
         </ul>
@@ -230,19 +230,6 @@
         </div>
     </section>
 
-    <section id="activity">
-        <div class="sectionHeader">
-            <div class="sectionBegin"></div>
-            <h2><span class="cmd-prefix">&gt; git log</span> <span class="cmd-flag">--recent</span></h2>
-            <div class="sectionEnd"></div>
-        </div>
-        <div class="section-content">
-            <div id="activityFeed" class="activity-feed">
-                <p class="activity-status">Loading recent activity&hellip;</p>
-            </div>
-        </div>
-    </section>
-
     <section id="projects">
         <div class="sectionHeader">
             <div class="sectionBegin"></div>
@@ -253,17 +240,17 @@
 
             <div class="project-card">
                 <span class="status-tag stable">[STABLE]</span>
-                <h3>Tank Tracker - Aquarium Planning & Documentation Platform</h3>
+                <h3>Tidemark - Aquarium Planning & Logging Platform</h3>
                 <ul class="skills-list">
                     <li class="web-language">React</li>
                     <li class="web-language">TypeScript</li>
                     <li class="web-language">Tailwind CSS</li>
                     <li class="web-language">Recharts</li>
                 </ul>
-                <p>Static web app for planning and journaling freshwater aquarium builds — multi-tank support, fully
+                <p> Web app for planning and journaling aquarium builds — multi-tank support, fully
                     customizable tracking fields, a dependency-aware build checklist with roster-status gating,
-                    auto-charted water parameters, and a branching questionnaire that recommends a starting roster based
-                    on species and desired care commitment.
+                    auto-charted water parameters, a smart schedule, and branching questionnaires that recommends a starting roster based
+                    on species and desired care commitment. Local-first with optional Google Drive connectivity.
                     <a href="https://ettran777.github.io/aquariumTool/" target="_blank">
                         <p class="resume-btn"><span style="color: white;">Go to Project →</span></p>
                     </a>
@@ -410,6 +397,19 @@
             </div>
 
 
+        </div>
+    </section>
+
+    <section id="activity">
+        <div class="sectionHeader">
+            <div class="sectionBegin"></div>
+            <h2><span class="cmd-prefix">&gt; git log</span> <span class="cmd-flag">--recent</span></h2>
+            <div class="sectionEnd"></div>
+        </div>
+        <div class="section-content">
+            <div id="activityFeed" class="activity-feed">
+                <p class="activity-status">Loading recent activity&hellip;</p>
+            </div>
         </div>
     </section>
 
