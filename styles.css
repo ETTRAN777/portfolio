@@ -261,6 +261,20 @@ a:hover {
    rather than sliding, and never gets its text swapped since it isn't a
    .role-flag. The <hr> inside is reset from its default horizontal-line
    appearance into a plain vertical bar matching the flag row's height. */
+/* Readable by screen readers and crawlers, invisible on screen — used for
+   the hero name, which is otherwise typed in letter by letter. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .role-divider {
   display: flex;
   align-items: stretch;
@@ -355,20 +369,23 @@ section h2 {
 /* Section content reveal — hidden until the section header's typing
    animation finishes (see script.js), then fades/slides in like the
    role-flag reveal above. Respects prefers-reduced-motion via the
-   .revealed class being added immediately with no transition delay. */
-.section-content {
+   .revealed class being added immediately with no transition delay.
+   Only hidden once script.js has added .reveal-ready to <html> — if the
+   script fails to load or errors before the observer is set up, content
+   simply stays visible instead of being stuck at opacity: 0. */
+.reveal-ready .section-content {
   opacity: 0;
   transform: translateY(14px);
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-.section-content.revealed {
+.reveal-ready .section-content.revealed {
   opacity: 1;
   transform: translateY(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .section-content {
+  .reveal-ready .section-content {
     transition: none;
   }
 }
@@ -486,6 +503,55 @@ section h2 {
   margin-bottom: 0;
 }
 
+/* GitHub repo link, pinned to a card's bottom-right corner — a quiet icon
+   rather than another amber button. Filled in by components.js. */
+.card-github {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 2;
+  display: flex;
+  padding: 0.4rem;
+  border-radius: 6px;
+  color: var(--text-muted);
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.card-github:hover,
+.card-github:focus-visible {
+  color: var(--amber);
+  background-color: var(--surface-2);
+}
+
+.card-github svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Highlight bullets inside a card (e.g. the Interclypse entry) */
+.card-points {
+  position: relative;
+  z-index: 1;
+  margin: 1rem 0 0.5rem;
+  padding-left: 1.2rem;
+  color: var(--text-muted);
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.card-points li + li {
+  margin-top: 0.5rem;
+}
+
+.card-points li::marker {
+  color: var(--amber);
+}
+
+.card-points strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
 /* Status tags — [STABLE] / [IN PROGRESS] / [WIP], reads
    like a build log rather than a generic badge. */
 .status-tag {
@@ -534,7 +600,8 @@ section h2 {
   color: var(--text-muted);
 }
 
-.course-card .skills-list {
+.course-card .skills-list,
+.project-card .skills-list {
   margin-bottom: 1rem;
 }
 
@@ -774,7 +841,12 @@ footer {
 
 /* Gallery Section */
 #gallery-choose {
-  margin: 4rem auto 2rem auto;
+  display: flex;
+  flex-wrap: wrap; /* stack the cards on phones instead of overflowing */
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  margin: 0 auto;
   max-width: 900px;
   gap: 2rem;
 }
@@ -782,7 +854,7 @@ footer {
 .big-choice-card {
   flex: 1 1 320px;
   max-width: 400px;
-  min-width: 260px;
+  min-width: min(260px, 100%);
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -1136,16 +1208,39 @@ footer {
 }
 
 /* ===== Activity Feed ===== */
-/* A flex-wrap tile grid, not a uniform CSS Grid — tile size varies by
-   type/significance (see tileSizeClass in script.js), so rows fill
-   unevenly like a bento layout rather than a spreadsheet. Tag colors
-   (push/pr/release/issue/note) carry over from the previous list design,
-   just applied to tile icons/borders instead of a left-hand label. */
+/* Tag colors (push/pr/release/issue/note) carry over from the previous
+   list design, applied to tile icons/borders instead of a left-hand label. */
 
+/* Justified rows in date order (see packRows in script.js): every row is
+   the full width and the same height; a tile's width comes from its diff
+   tier. Each tile's flex value is set inline by script.js. */
 .activity-feed {
+  --tile-row: 128px;
+  --tile-gap: 0.85rem;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.85rem;
+  flex-direction: column;
+  gap: var(--tile-gap);
+}
+
+.activity-row {
+  display: flex;
+  gap: var(--tile-gap);
+  height: var(--tile-row);
+}
+
+.activity-row > * {
+  min-width: 0;
+}
+
+.activity-controls {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.activity-controls[hidden],
+.activity-controls [hidden] {
+  display: none;
 }
 
 .activity-status {
@@ -1177,10 +1272,6 @@ footer {
 .activity-toggle:hover {
   border-color: var(--teal);
   color: var(--text);
-}
-
-.activity-grid-toggle {
-  margin-top: 1rem;
 }
 
 .activity-tag {
@@ -1225,11 +1316,28 @@ footer {
   outline: none;
 }
 
-/* Sizes are flex-basis, not fixed widths — flex-wrap lets rows settle
-   unevenly, which is the actual "flex grid" effect. */
-.activity-tile.size-sm { flex: 1 1 150px; min-height: 120px; }
-.activity-tile.size-md { flex: 1 1 230px; min-height: 170px; }
-.activity-tile.size-lg { flex: 1 1 320px; min-height: 230px; }
+/* Width comes from the diff tier (set inline by script.js); the icon
+   scales with it too, so size reads at a glance. */
+.activity-tile.size-sm .activity-tile-icon svg { width: 22px; height: 22px; }
+.activity-tile.size-md .activity-tile-icon svg { width: 30px; height: 30px; }
+.activity-tile.size-lg .activity-tile-icon svg { width: 38px; height: 38px; }
+.activity-tile.size-xl .activity-tile-icon svg { width: 46px; height: 46px; }
+
+/* Relative date ("3d ago") in the top-right corner of every tile. */
+.activity-tile-date {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.activity-tile.has-photo .activity-tile-date {
+  color: #EDEFF4;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
 
 .activity-tile-icon {
   flex: 1;
@@ -1499,8 +1607,9 @@ footer {
   text-decoration: underline;
 }
 
+/* Phones: rows hold 2 units, so anything md or bigger takes a full row. */
 @media (max-width: 600px) {
-  .activity-tile.size-sm { flex-basis: 120px; min-height: 100px; }
-  .activity-tile.size-md { flex-basis: 160px; min-height: 130px; }
-  .activity-tile.size-lg { flex-basis: 100%; min-height: 180px; }
+  .activity-feed {
+    --tile-row: 112px;
+  }
 }

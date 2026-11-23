@@ -8,8 +8,11 @@
 // Each run MERGES freshly-fetched events into whatever's already in
 // activity-cache.json (deduped by URL) rather than replacing it — so a
 // quiet day, or a repo that only gets occasional commits, doesn't shrink
-// the feed. History accumulates up to MAX_TOTAL_EVENTS, then the oldest
-// entries roll off.
+// the feed. History accumulates indefinitely — nothing rolls off, and the
+// page pages through all of it with "Show more". GitHub's events API only
+// reaches back ~90 days, so older history can be backlogged by hand: add
+// entries (same shape as below) to activity-cache.json on the
+// activity-data branch and they'll be kept from then on.
 //
 // Run manually for local testing:
 //   GITHUB_TOKEN=ghp_xxx node scripts/fetch-activity.js
@@ -33,8 +36,6 @@ const REPOS = ['ettran777/portfolio', 'ettran777/aquariumTool', 'ettran777/Sushi
 const ALLOWED_AUTHOR = 'ettran777';
 
 const CACHE_PATH = path.join(__dirname, '..', 'activity-cache.json');
-const MAX_EVENTS_PER_REPO = 15; // how many of each repo's most recent events to pull per run
-const MAX_TOTAL_EVENTS = 50; // retention cap across all repos combined, after merging with history
 const TOKEN = process.env.GITHUB_TOKEN;
 
 // Pushes to these branches are excluded from the feed — currently just
@@ -59,6 +60,18 @@ function isChoreMessage(text) {
 }
 
 const MAX_EXTRA_LENGTH = 600; // caps how much of a long PR/release/issue body gets stored
+
+// Git trailers ("Co-authored-by: …", "Signed-off-by: …") are metadata, not
+// patch notes — drop a trailing paragraph made up only of trailer lines so
+// it doesn't show up as the last item in the feed's notes. Trailer keys are
+// hyphenated (X-by), which keeps a real last note like "Fixes: …" intact.
+function stripTrailers(body) {
+  const paragraphs = body.trim().split(/\n\s*\n/);
+  const last = paragraphs[paragraphs.length - 1] || '';
+  const isTrailerBlock = last.trim() && last.trim().split('\n').every((l) => /^[A-Za-z]+(-[A-Za-z]+)+: \S/.test(l.trim()));
+  if (isTrailerBlock) paragraphs.pop();
+  return paragraphs.join('\n\n');
+}
 
 function truncate(str) {
   if (!str) return null;
@@ -121,7 +134,7 @@ async function normalizeEvent(event) {
       // `git commit -m "Title" -m "body 1" -m "body 2"` joins subsequent
       // -m messages as separate paragraphs after the first line — that's
       // exactly what we want to surface as patch notes.
-      const patchNotes = truncate(lines.slice(1).join('\n'));
+      const patchNotes = truncate(stripTrailers(lines.slice(1).join('\n')));
       const count = compareData.total_commits || commits.length;
       // The compare response's `files` array (already fetched, no extra
       // call) has per-file additions/deletions — summing gives the whole
@@ -136,7 +149,7 @@ async function normalizeEvent(event) {
         tagLabel: 'PUSH',
         // No "Pushed a commit:" prefix — the PUSH tag already says that,
         // repeating it in the title is just noise. Title is the commit
-        // message itself; commitCount (used for tile sizing and shown
+        // message itself; commitCount (shown
         // next to the repo name) is how multi-commit pushes are conveyed.
         message: firstLine,
         commitCount: count,
@@ -208,7 +221,9 @@ async function fetchRepoEvents(repo) {
   // that call happens), not just a cosmetic filter after the fact.
   const authored = raw.filter((event) => (event.actor?.login || '').toLowerCase() === ALLOWED_AUTHOR);
   const normalized = await Promise.all(authored.map((event) => normalizeEvent(event)));
-  return normalized.filter(Boolean).slice(0, MAX_EVENTS_PER_REPO);
+  // No per-run cap: everything the events API returns is kept, so a busy
+  // day can't silently drop commits before they ever reach the cache.
+  return normalized.filter(Boolean);
 }
 
 function loadExistingCache() {
@@ -259,18 +274,14 @@ async function main() {
   // Merge freshly-fetched events with everything already cached, so a
   // quiet day (or a repo with infrequent commits) doesn't shrink the
   // feed — history accumulates across runs instead of being replaced.
-  // Trim is purely by recency across ALL repos combined — no per-repo
-  // fairness/balancing. If one repo is genuinely the most active lately,
-  // the feed should reflect that truthfully rather than artificially
-  // holding slots open for quieter repos.
+  // Sorted newest-first across all repos combined, no retention cap.
   const merged = new Map();
   for (const event of [...existingClean, ...allEvents]) {
     merged.set(eventKey(event), event);
   }
 
   const deduped = Array.from(merged.values())
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, MAX_TOTAL_EVENTS);
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
 
   const output = {
     generatedAt: new Date().toISOString(),

@@ -1,0 +1,3 @@
+# Local copy of the activity feed for testing — the live one lives on the
+# activity-data branch (see .github/workflows/update-activity.yml).
+activity-cache.json

@@ -61,6 +61,9 @@ jobs:
           fi
 
           cp /tmp/activity-cache.json activity-cache.json
-          git add activity-cache.json
+          # -f: activity-cache.json is gitignored on main (so a local test
+          # copy never gets committed there), which would otherwise make a
+          # plain `git add` refuse it here.
+          git add -f activity-cache.json
           git diff --cached --quiet || git commit -m "chore: update activity feed cache"
           git push origin activity-data

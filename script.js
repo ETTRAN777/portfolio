@@ -118,50 +118,68 @@ function scrollToSection(element) {
 /* =========================================
    MOBILE NAVIGATION LOGIC
    ========================================= */
-const navToggle = document.getElementById('navToggle');
-const mobileNav = document.getElementById('mobileNavContainer');
-const overlay = document.getElementById('overlay');
+// Built from #navbar's own links on every page, so the desktop and mobile
+// menus can never drift apart and each page only lists its links once.
+// The hamburger/drawer/overlay are hidden by CSS above 768px.
+function buildMobileNav() {
+  const desktopNav = document.getElementById('navbar');
+  if (!desktopNav) return;
 
-// Function to toggle menu
-function toggleMobileMenu() {
-    const isOpen = mobileNav.classList.contains('open');
-    
-    if (isOpen) {
-        // Close Menu
-        mobileNav.classList.remove('open');
-        overlay.classList.remove('show');
-        navToggle.classList.remove('animate-x'); // Rotate back
-        setTimeout(() => {
-            navToggle.classList.remove('open'); // Separate bars
-        }, 200);
+  const overlay = document.createElement('div');
+  overlay.id = 'overlay';
+  overlay.className = 'overlay';
+
+  const navToggle = document.createElement('button');
+  navToggle.id = 'navToggle';
+  navToggle.type = 'button';
+  navToggle.setAttribute('aria-label', 'Open menu');
+  navToggle.setAttribute('aria-expanded', 'false');
+  navToggle.setAttribute('aria-controls', 'mobileNavContainer');
+  navToggle.innerHTML = '<span class="bar"></span><span class="bar"></span><span class="bar"></span>';
+
+  const mobileNav = document.createElement('nav');
+  mobileNav.id = 'mobileNavContainer';
+  mobileNav.setAttribute('aria-label', 'Mobile');
+  mobileNav.inert = true; // off-screen links stay out of the Tab order while closed
+  const list = document.createElement('ul');
+  list.id = 'mobile-nav-list';
+  desktopNav.querySelectorAll('a').forEach((link) => {
+    const li = document.createElement('li');
+    const copy = link.cloneNode(true);
+    copy.classList.remove('active');
+    li.appendChild(copy);
+    list.appendChild(li);
+  });
+  mobileNav.appendChild(list);
+
+  document.body.prepend(overlay, navToggle, mobileNav);
+
+  let closeTimer;
+  function setOpen(open) {
+    clearTimeout(closeTimer);
+    mobileNav.classList.toggle('open', open);
+    overlay.classList.toggle('show', open);
+    mobileNav.inert = !open;
+    navToggle.setAttribute('aria-expanded', String(open));
+    navToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    if (open) {
+      navToggle.classList.add('open'); // bring bars together...
+      closeTimer = setTimeout(() => navToggle.classList.add('animate-x'), 200); // ...then rotate to X
     } else {
-        // Open Menu
-        mobileNav.classList.add('open');
-        overlay.classList.add('show');
-        navToggle.classList.add('open'); // Bring bars together
-        setTimeout(() => {
-            navToggle.classList.add('animate-x'); // Rotate to X
-        }, 200);
+      navToggle.classList.remove('animate-x');
+      closeTimer = setTimeout(() => navToggle.classList.remove('open'), 200);
     }
-}
+  }
+  const isOpen = () => mobileNav.classList.contains('open');
 
-// Function to handle link clicks (scroll + close menu)
-function handleMobileClick(sectionId) {
-    scrollToSection(sectionId); // Uses your existing scroll function
-    toggleMobileMenu(); // Close the menu
+  navToggle.addEventListener('click', () => setOpen(!isOpen()));
+  overlay.addEventListener('click', () => setOpen(false));
+  list.addEventListener('click', (e) => { if (e.target.closest('a')) setOpen(false); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen()) { setOpen(false); navToggle.focus(); }
+  });
 }
-
-// Event Listeners
-// Guarded — #navToggle/#overlay only exist on index.html. Without this
-// check, getElementById returns null on every other page (gallery.html,
-// debtAndTaxes.html, volare.html), and calling .addEventListener on null
-// throws synchronously — which was halting the rest of this script,
-// including the gallery modal setup below, on every page that actually
-// has a gallery.
-if (navToggle && overlay) {
-  navToggle.addEventListener('click', toggleMobileMenu);
-  overlay.addEventListener('click', toggleMobileMenu);
-}
+buildMobileNav();
 
 // Gallery popup modal for .galleryItem
 document.addEventListener("DOMContentLoaded", () => {
@@ -316,12 +334,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const headers = document.querySelectorAll('.sectionHeader h2');
   if (!headers.length) return;
 
-  if (!('IntersectionObserver' in window)) {
-    // No animation support — just make sure content isn't stuck at
-    // opacity: 0 forever.
-    document.querySelectorAll('.section-content').forEach((c) => c.classList.add('revealed'));
-    return;
-  }
+  // No animation support — content was never hidden (see .reveal-ready in
+  // styles.css), so there's nothing to do.
+  if (!('IntersectionObserver' in window)) return;
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -340,6 +355,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, { threshold: 0.4 });
 
+  // Only now that the observer exists is it safe to hide content until its
+  // header types in — set any earlier and a failure above would leave the
+  // page blank.
+  document.documentElement.classList.add('reveal-ready');
   headers.forEach((h) => observer.observe(h));
 });
 
@@ -375,9 +394,12 @@ document.addEventListener('DOMContentLoaded', () => {
 // Merges pre-fetched GitHub activity (built server-side by
 // .github/workflows/update-activity.yml + scripts/fetch-activity.js and
 // written to activity-cache.json) with hand-written "editorial" entries
-// from activity-editorial.json into a flex-wrap tile grid — tiles vary in
-// size by type/significance rather than a uniform CSS Grid, so it reads
-// as a deliberate bento-style layout, not a spreadsheet.
+// from activity-editorial.json into a bento-style CSS grid — each tile's
+// footprint is set by how big its diff is (see tileSizeClass below).
+//
+// Testing locally: drop a file named activity-cache.json in the project
+// root and serve the site from localhost — it's used instead of the live
+// branch (see fetchActivityCache). The file is gitignored.
 //
 // No GitHub API calls happen in the browser — the cache file is a plain
 // static fetch, so there's no rate limit exposure for site visitors and
@@ -392,8 +414,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const feedEl = document.getElementById('activityFeed');
   if (!feedEl) return;
 
-  const MAX_ITEMS = 30; // total items considered, across both sources — the
-  // grid shows everything up to this, no collapsing (compactness is the point).
+  // No cap on history — everything in the cache is available, revealed a
+  // page at a time with "Show more".
+  const PAGE_SIZE = 15; // roughly how many tiles each "Show more" adds (rounded up to whole rows)
 
   let allItems = [];
 
@@ -428,23 +451,38 @@ document.addEventListener('DOMContentLoaded', () => {
     note: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"></path></svg>',
   };
 
-  // Tile size varies by type/significance, not uniformly — releases and
-  // photo notes are the "big" tiles, PRs/issues/plain notes are medium.
-  // Pushes vary by actual content: a multi-commit push or one with patch
-  // notes gets more visual weight than a single quiet commit, since in
-  // practice pushes dominate the real feed and uniform-small pushes would
-  // flatten the whole grid into one size. Combined with flex-wrap this
-  // gives an uneven bento-grid look while staying a real flex-based grid,
-  // not absolute-positioned masonry.
+  // Tile size = how much code changed (lines added + deleted), shown as
+  // width: each tier is a number of width units in a row (see packRows).
+  // Tiers are roughly log-scaled because real diffs have a long tail (a
+  // handful of 1000-line pushes, lots of 5-line fixes).
+  //   size-sm  1 unit   < 25 lines
+  //   size-md  2 units  25–199
+  //   size-lg  3 units  200–599
+  //   size-xl  4 units  600+
+  const DIFF_TIERS = [
+    [600, 'size-xl'],
+    [200, 'size-lg'],
+    [25, 'size-md'],
+  ];
+  const TILE_UNITS = { 'size-sm': 1, 'size-md': 2, 'size-lg': 3, 'size-xl': 4 };
+
+  function diffSize(item) {
+    if (item.additions == null) return null;
+    return item.additions + (item.deletions || 0);
+  }
+
   function tileSizeClass(item) {
-    if (item.tagClass === 'release') return 'size-lg';
+    // Not code changes, so no diff to go on — sized by type instead.
     if (item.source === 'editorial') return item.photo ? 'size-lg' : 'size-md';
-    if (item.tagClass === 'pr' || item.tagClass === 'issue') return 'size-md';
-    if (item.tagClass === 'push') {
-      const count = item.commitCount || 1;
-      if (count >= 5 || (item.extra && item.extra.length > 200)) return 'size-lg';
-      if (count >= 2 || item.extra) return 'size-md';
-      return 'size-sm';
+    const lines = diffSize(item);
+    // No diffstat: GitHub omits it for very large pushes, and real
+    // PR/release/issue events don't carry one — releases default big,
+    // everything else to the middle tier rather than a guess. A push
+    // relabeled as a PR/release by labelByMessage() keeps its diff, so it's
+    // still sized by it.
+    if (lines == null) return item.tagClass === 'release' ? 'size-lg' : 'size-md';
+    for (const [min, sizeClass] of DIFF_TIERS) {
+      if (lines >= min) return sizeClass;
     }
     return 'size-sm';
   }
@@ -455,60 +493,21 @@ document.addEventListener('DOMContentLoaded', () => {
   // to the repo name instead, e.g. "aquariumTool · 3 commits".
   function repoLine(item) {
     const repo = escapeHtml(item.repo);
-    if (item.tagClass === 'push' && item.commitCount > 1) {
+    if (item.commitCount > 1) {
       return `${repo} &middot; ${item.commitCount} commits`;
     }
     return repo;
-  }
-
-  // Plain-text length of repoLine()'s output, without building the HTML —
-  // used only for the width estimate below, kept in sync with repoLine()
-  // by hand since duplicating the tiny branch is simpler than parsing
-  // HTML entities back out of the rendered string.
-  function repoLineLength(item) {
-    let text = item.repo || '';
-    if (item.tagClass === 'push' && item.commitCount > 1) {
-      text += ` · ${item.commitCount} commits`;
-    }
-    return text.length;
   }
 
   // Diffstat for a push, e.g. "+120" or "+120 -8" — deletions are only
   // shown when there actually are any; a push with zero deletions just
   // shows the insertions alone rather than a redundant "-0".
   function diffStatHtml(item) {
-    if (item.tagClass !== 'push' || item.additions == null || item.deletions == null) return '';
+    if (item.additions == null || item.deletions == null) return '';
     if (item.additions === 0 && item.deletions === 0) return '';
     const parts = [`<span class="diff-add">+${item.additions}</span>`];
     if (item.deletions > 0) parts.push(`<span class="diff-del">-${item.deletions}</span>`);
     return parts.join(' ');
-  }
-
-  // Plain-text length variant of diffStatHtml(), same reasoning as
-  // repoLineLength() above.
-  function diffStatLength(item) {
-    if (item.tagClass !== 'push' || item.additions == null || item.deletions == null) return 0;
-    if (item.additions === 0 && item.deletions === 0) return 0;
-    let text = `+${item.additions}`;
-    if (item.deletions > 0) text += ` -${item.deletions}`;
-    return text.length;
-  }
-
-  // Tile width is content-driven, based ONLY on the meta line (repo · N
-  // commits +NNN -NN) — title text is excluded since it already truncates
-  // cleanly with CSS ellipsis by design. The 3 size tiers set the
-  // baseline (and control height via CSS); this raises the width floor
-  // when the meta line genuinely needs more room than that.
-  const BASE_TILE_WIDTH = { 'size-sm': 150, 'size-md': 230, 'size-lg': 320 };
-  const MAX_TILE_WIDTH = 340;
-  const PX_PER_CHAR = 6.5; // rough average for our font sizes — good enough for layout sizing, not pixel-perfect
-  const TILE_CONTENT_PADDING = 36; // tile's own horizontal padding + the meta-row's flex gap
-
-  function estimateTileWidth(item, sizeClass) {
-    const metaLen = repoLineLength(item) + diffStatLength(item);
-    const contentDriven = metaLen * PX_PER_CHAR + TILE_CONTENT_PADDING;
-    const base = BASE_TILE_WIDTH[sizeClass] || BASE_TILE_WIDTH['size-sm'];
-    return Math.min(MAX_TILE_WIDTH, Math.max(base, contentDriven));
   }
 
   // activity-cache.json is written by the daily Action to a SEPARATE
@@ -522,16 +521,50 @@ document.addEventListener('DOMContentLoaded', () => {
   // Shape: { generatedAt, events: [...] }
   const ACTIVITY_CACHE_URL = 'https://raw.githubusercontent.com/ETTRAN777/portfolio/activity-data/activity-cache.json';
 
+  // Local testing: on localhost, a local activity-cache.json in the
+  // project root wins (it's in .gitignore, so it never gets committed),
+  // falling back to the live branch when there isn't one. The published
+  // site only ever reads the live branch.
+  const LOCAL_ACTIVITY_CACHE = 'activity-cache.json';
+  const isLocalDev = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname) ||
+    location.hostname.endsWith('.localhost');
+
+  // Pushes whose commit message marks them as something more specific get
+  // that label instead — applied at load, so it covers everything already
+  // in the cache and anything backlogged by hand, not just new events.
+  // Merge is checked first: "Merge branch 'release/v2'" is still a merge.
+  //   starts with "merge"         -> PR       (e.g. "Merge branch 'main' of …")
+  //   contains "v" + a number     -> RELEASE  (e.g. "V2.5 Schedule Revamp")
+  // "Merge" only counts at the start, which is where git puts it in its own
+  // merge commits ("Merge branch …", "Merge pull request …") — anywhere
+  // would also catch messages like "…less merge conflicts".
+  // Only the tag/icon change; commit count, diffstat and diff-based size
+  // carry over unchanged.
+  const MESSAGE_LABELS = [
+    { test: /^\s*merge\b/i, tagClass: 'pr', tagLabel: 'PR' },
+    { test: /\bv\d/i, tagClass: 'release', tagLabel: 'RELEASE' },
+  ];
+
+  function labelByMessage(event) {
+    if (event.tagClass !== 'push') return event;
+    const rule = MESSAGE_LABELS.find(({ test }) => test.test(event.message || ''));
+    return rule ? { ...event, tagClass: rule.tagClass, tagLabel: rule.tagLabel } : event;
+  }
+
   async function fetchActivityCache() {
-    try {
-      const res = await fetch(ACTIVITY_CACHE_URL);
-      if (!res.ok) return [];
-      const data = await res.json();
-      return (data.events || []).map((event) => ({ ...event, source: 'github' }));
-    } catch (err) {
-      console.warn('Activity feed: could not load activity-cache.json', err);
-      return [];
+    const sources = isLocalDev ? [LOCAL_ACTIVITY_CACHE, ACTIVITY_CACHE_URL] : [ACTIVITY_CACHE_URL];
+    for (const url of sources) {
+      try {
+        const res = await fetch(url, url === LOCAL_ACTIVITY_CACHE ? { cache: 'no-store' } : undefined);
+        if (!res.ok) continue;
+        const data = await res.json();
+        if (url === LOCAL_ACTIVITY_CACHE) console.info('Activity feed: using local activity-cache.json');
+        return (data.events || []).map((event) => labelByMessage({ ...event, source: 'github' }));
+      } catch (err) {
+        console.warn(`Activity feed: could not load ${url}`, err);
+      }
     }
+    return [];
   }
 
   async function fetchEditorialEntries() {
@@ -556,18 +589,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Compact date for the tile corner: "3d ago" while recent, then "Oct 14"
+  // (year only when it isn't this year) — narrow tiles can't fit
+  // "Oct 14, 2026". The modal still uses the full timeAgo().
+  function tileDate(isoDate) {
+    const d = new Date(isoDate);
+    if (Number.isNaN(d.getTime())) return '';
+    if (Date.now() - d.getTime() < 30 * 86400000) return timeAgo(isoDate);
+    const opts = { month: 'short', day: 'numeric' };
+    if (d.getFullYear() !== new Date().getFullYear()) opts.year = '2-digit';
+    return d.toLocaleDateString(undefined, opts);
+  }
+
   function tileHtml(item, idx) {
     const sizeClass = tileSizeClass(item);
     const diffStat = diffStatHtml(item);
-    const width = estimateTileWidth(item, sizeClass);
-    // min-width only, not flex-basis — flex-basis stays under CSS control
-    // so the mobile media query (which forces size-lg to 100% width on
-    // narrow screens) still works. This just raises the floor so a tile
-    // never shrinks below what its own content needs.
-    const widthStyle = `min-width:${width}px;`;
+    // Relative date in the corner, so order is readable tile by tile.
+    const date = `<time class="activity-tile-date" datetime="${escapeHtml(item.date)}">${tileDate(item.date)}</time>`;
     if (item.photo) {
       return `
-        <button type="button" class="activity-tile ${sizeClass} has-photo tag-${item.tagClass}" style="background-image:url('${item.photo}'); ${widthStyle}" data-idx="${idx}">
+        <button type="button" class="activity-tile ${sizeClass} has-photo tag-${item.tagClass}" style="background-image:url('${item.photo}');" data-idx="${idx}">
+          ${date}
           <div class="activity-tile-overlay">
             <div class="activity-tile-title-row">
               <span class="activity-tag tag-${item.tagClass}">${item.tagLabel}</span>
@@ -582,7 +624,8 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
     return `
-      <button type="button" class="activity-tile ${sizeClass} tag-${item.tagClass}" style="${widthStyle}" data-idx="${idx}">
+      <button type="button" class="activity-tile ${sizeClass} tag-${item.tagClass}" data-idx="${idx}">
+        ${date}
         <div class="activity-tile-icon">${ICONS[item.tagClass] || ICONS.note}</div>
         <div class="activity-tile-footer">
           <div class="activity-tile-title-row">
@@ -730,26 +773,71 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modalOverlay) modalOverlay.classList.remove('open');
   }
 
-  // All message/repo/extra text arrives as raw plain text from both
-  // sources above — escaping happens exactly once, here, at render time.
-  // Groups already-rendered tiles into visual rows by comparing offsetTop
-  // (flex-wrap items sharing a row share the same top edge, regardless of
-  // their individual height/size class), then returns the index where
-  // row number maxRows+1 begins — i.e. everything from that index on
-  // belongs to a row beyond the limit and should be hidden by default.
-  // Returns tiles.length if the whole grid already fits within maxRows.
-  function computeRowCutoffIndex(tiles, maxRows) {
-    let rowCount = 0;
-    let lastTop = null;
-    for (let i = 0; i < tiles.length; i++) {
-      const top = tiles[i].offsetTop;
-      if (top !== lastTop) {
-        rowCount++;
-        lastTop = top;
-        if (rowCount > maxRows) return i;
+  // ----- Layout: justified rows, newest first -----
+  // Tiles stay in strict date order, left to right then top to bottom, and
+  // are packed into rows like a justified photo gallery: each tile's width
+  // is proportional to its units, and every row is stretched to span the
+  // full width, so there are no holes and no right-edge raggedness.
+  //
+  // How many units fit per row depends on the feed's width (one unit is at
+  // least MIN_UNIT_PX wide). Order is fixed, so the only choice is where
+  // rows break. A row whose units don't add up to exactly the capacity has
+  // its tiles stretched or squeezed to fit; the breaks are chosen for the
+  // whole list at once (like justified text) to keep that distortion as
+  // small as possible overall, with squeezing capped so tiers never visually
+  // overlap (on real data this keeps every tile within ~0.86–1.2× its true
+  // size). The very last row isn't stretched, so a lone small tile at the
+  // end stays small.
+  const MIN_UNIT_PX = 150;
+  const MAX_SQUEEZE = 1.2;
+  const MAX_ROW_ITEMS = 12;
+
+  function rowCapacity() {
+    return Math.max(2, Math.floor(feedEl.clientWidth / MIN_UNIT_PX));
+  }
+
+  function packRows(units, capacity) {
+    const w = units.map((u) => Math.min(u, capacity));
+    const n = w.length;
+    // best[i] = lowest total distortion for laying out the first i tiles;
+    // from[i] = where the last row of that layout starts.
+    const best = new Array(n + 1).fill(Infinity);
+    const from = new Array(n + 1).fill(0);
+    best[0] = 0;
+    for (let end = 1; end <= n; end++) {
+      let sum = 0;
+      for (let start = end - 1; start >= 0 && end - start <= MAX_ROW_ITEMS; start--) {
+        sum += w[start];
+        const scale = sum / capacity; // >1 squeezed, <1 stretched
+        if (scale > MAX_SQUEEZE && end - start > 1) break; // only gets worse going further back
+        const isLast = end === n;
+        // Squared log error: stretching ×1.5 costs the same as squeezing ×1/1.5.
+        const cost = isLast && scale <= 1 ? 0 : Math.log(scale) ** 2;
+        if (best[start] + cost < best[end]) {
+          best[end] = best[start] + cost;
+          from[end] = start;
+        }
       }
     }
-    return tiles.length;
+    const rows = [];
+    for (let end = n; end > 0; end = from[end]) {
+      const start = from[end];
+      const items = [];
+      let sum = 0;
+      for (let i = start; i < end; i++) {
+        items.push({ i, w: w[i] });
+        sum += w[i];
+      }
+      rows.unshift({ items, units: sum });
+    }
+    return rows;
+  }
+
+  // A w-unit tile spans w units plus the (w-1) gaps between them, so
+  // flex-basis carries those gaps and flex-grow splits the rest by units —
+  // that keeps "2 units" the same width in every row, whatever else is in it.
+  function flexFor(w) {
+    return `${w} ${w} calc(${w - 1} * var(--tile-gap))`;
   }
 
   function renderActivity() {
@@ -758,48 +846,89 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    feedEl.innerHTML = allItems.map(tileHtml).join('');
-
-    const tiles = [...feedEl.querySelectorAll('.activity-tile')];
+    // Tiles are built once and moved between rows on re-layout, so their
+    // click handlers survive resizes and paging.
+    const holder = document.createElement('div');
+    holder.innerHTML = allItems.map(tileHtml).join('');
+    const tiles = [...holder.querySelectorAll('.activity-tile')];
     tiles.forEach((tile) => {
-      tile.addEventListener('click', () => {
-        const idx = Number(tile.dataset.idx);
-        openModal(allItems[idx]);
+      tile.addEventListener('click', () => openModal(allItems[Number(tile.dataset.idx)]));
+    });
+    const units = tiles.map((tile) => TILE_UNITS[[...tile.classList].find((c) => c in TILE_UNITS)] || 1);
+
+    feedEl.parentNode.querySelector('.activity-controls')?.remove();
+    const controls = document.createElement('div');
+    controls.className = 'activity-controls';
+    const moreBtn = document.createElement('button');
+    moreBtn.type = 'button';
+    moreBtn.className = 'activity-toggle';
+    const lessBtn = document.createElement('button');
+    lessBtn.type = 'button';
+    lessBtn.className = 'activity-toggle';
+    lessBtn.textContent = 'Show less';
+    controls.append(moreBtn, lessBtn);
+    feedEl.insertAdjacentElement('afterend', controls);
+
+    let target = PAGE_SIZE; // tiles wanted on screen; always rounded up to whole rows
+    let capacity = 0;
+    let rows = [];
+
+    function layout() {
+      capacity = rowCapacity();
+      rows = packRows(units, capacity);
+      feedEl.replaceChildren();
+      let shown = 0;
+      for (const [r, row] of rows.entries()) {
+        if (shown >= target) break;
+        const rowEl = document.createElement('div');
+        rowEl.className = 'activity-row';
+        row.items.forEach(({ i, w }) => {
+          tiles[i].style.flex = flexFor(w);
+          rowEl.appendChild(tiles[i]);
+        });
+        const isLastRow = r === rows.length - 1;
+        if (isLastRow && row.units < capacity) {
+          const spacer = document.createElement('div');
+          spacer.className = 'activity-row-spacer';
+          spacer.style.flex = flexFor(capacity - row.units);
+          rowEl.appendChild(spacer);
+        }
+        feedEl.appendChild(rowEl);
+        shown += row.items.length;
+      }
+      const remaining = tiles.length - shown;
+      moreBtn.hidden = remaining === 0;
+      moreBtn.textContent = `Show more (${remaining} older)`;
+      lessBtn.hidden = target <= PAGE_SIZE; // only once "Show more" has been used
+      controls.hidden = moreBtn.hidden && lessBtn.hidden;
+    }
+
+    moreBtn.addEventListener('click', () => {
+      target = feedEl.querySelectorAll('.activity-tile').length + PAGE_SIZE;
+      layout();
+    });
+    lessBtn.addEventListener('click', () => {
+      target = PAGE_SIZE;
+      layout();
+      feedEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // Units per row depend on width — re-pack only when that number changes.
+    let resizeFrame = 0;
+    window.addEventListener('resize', () => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        if (rowCapacity() !== capacity) layout();
       });
     });
 
-    const existingToggle = feedEl.parentNode.querySelector('.activity-grid-toggle');
-    if (existingToggle) existingToggle.remove();
-
-    // Row measurement only happens once, right after initial layout — it
-    // doesn't re-run on window resize, same pragmatic scope as the
-    // previous list-based show-more feature had.
-    const MAX_ROWS = 4;
-    const cutoff = computeRowCutoffIndex(tiles, MAX_ROWS);
-    if (cutoff >= tiles.length) return; // already fits within 4 rows, no toggle needed
-
-    tiles.slice(cutoff).forEach((tile) => { tile.style.display = 'none'; });
-
-    const hiddenCount = tiles.length - cutoff;
-    const toggleBtn = document.createElement('button');
-    toggleBtn.type = 'button';
-    toggleBtn.className = 'activity-toggle activity-grid-toggle';
-    toggleBtn.textContent = `Show ${hiddenCount} more`;
-    let expanded = false;
-    toggleBtn.addEventListener('click', () => {
-      expanded = !expanded;
-      tiles.slice(cutoff).forEach((tile) => { tile.style.display = expanded ? '' : 'none'; });
-      toggleBtn.textContent = expanded ? 'Show less' : `Show ${hiddenCount} more`;
-      if (!expanded) feedEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    });
-    feedEl.insertAdjacentElement('afterend', toggleBtn);
+    layout();
   }
 
   Promise.all([fetchActivityCache(), fetchEditorialEntries()])
     .then(([githubEvents, editorialEntries]) => {
       allItems = [...githubEvents, ...editorialEntries]
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
-        .slice(0, MAX_ITEMS);
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
       renderActivity();
     })
     .catch((err) => {
