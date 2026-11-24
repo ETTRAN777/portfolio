@@ -1,6 +1,20 @@
 {
-  "generatedAt": "2026-11-24T00:35:52.307Z",
+  "generatedAt": "2026-11-24T22:55:07.152Z",
   "events": [
+    {
+      "source": "github",
+      "repo": "aquariumTool",
+      "date": "2026-11-22T23:17:20Z",
+      "tagClass": "push",
+      "tagLabel": "PUSH",
+      "message": "V2.5: feat - Onboarding Rework Part 1",
+      "commitCount": 1,
+      "additions": 1239,
+      "deletions": 370,
+      "extra": "Selection Stage: Onboarding flow reworked to support tanks in different life stages\n\n- Each stage changes where you begin using Tidemark\n\n- Better tank size selection menu\n\n- Better blank tank menu: Users can now select between Freshwater/Saltwater setups, and can now utilize custom field presets while skipping the questionnaire\n\n- Groundwork for Part 2: tanks record which stage they started at, for the upcoming Dashboard rework",
+      "extraLabel": "Patch notes",
+      "url": "https://github.com/ETTRAN777/aquariumTool/commit/69978647ea659f01c84e59d6be54f69c3b7b9d0b"
+    },
     {
       "source": "github",
       "repo": "portfolio",
